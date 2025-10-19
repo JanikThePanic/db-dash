@@ -13,4 +13,5 @@ class ProjectionBody(BaseModel):
 
 @router.post("/projection")
 def project(body: ProjectionBody):
+    """ Project vectors from a specific collection into lower dimensions for visualization. """
     return wc.project_vectors(collection=body.collection, limit=body.limit, dims=body.dims, include_props=body.includeProps)
