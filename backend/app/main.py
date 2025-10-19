@@ -17,6 +17,9 @@ app.add_middleware(
 # Health check
 @app.get("/health")
 def health():
+    """
+    Returns an HTTP 200 status code if the server is healthy.
+    """
     return {"status": "ok"}
 
 # Mount your API routes (they’ll live under /api)
