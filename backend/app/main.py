@@ -18,7 +18,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/health", tags=["server"])
+@app.get("/health", tags=["backend"])
 def health():
     """ Health check endpoint. Returns status ok if the server is running. """
     return {"status": "ok"}
