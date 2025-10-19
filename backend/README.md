@@ -1,20 +1,19 @@
 # welcome to the back end
 
-for dev run (windows), from root:
+for dev run (windows), first time setup:
 
 ```bash
 cd backend
-```
-
-```bash
 python -m venv venv
 .\venv\Scripts\activate
 pip install -r .\requirements.txt
+uvicorn app.main:app --reload
 ```
 
-and to start
-
-```py
+otherwise:
+```bash
+cd backend
+.\venv\Scripts\activate
 uvicorn app.main:app --reload
 ```
 
