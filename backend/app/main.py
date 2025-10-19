@@ -1,11 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import router as api_router
+# API endpoints
+from app.api.collections import router as collections_router
+from app.api.objects import router as objects_router
+from app.api.search import router as search_router
+from app.api.projection import router as projection_router
+from app.api.meta import router as meta_router
 
 app = FastAPI(title="db-dash backend")
 
-# CORS (adjust for your frontend origin as needed)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
@@ -14,13 +18,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Health check
-@app.get("/health")
+@app.get("/health", tags=["server"])
 def health():
-    """
-    Returns an HTTP 200 status code if the server is healthy.
-    """
+    """ Health check endpoint. Returns status ok if the server is running. """
     return {"status": "ok"}
 
-# Mount your API routes (they’ll live under /api)
-app.include_router(api_router, prefix="/api")
+# Mount API under /api
+app.include_router(collections_router, prefix="/api")
+app.include_router(objects_router, prefix="/api")
+app.include_router(search_router, prefix="/api")
+app.include_router(projection_router, prefix="/api")
+app.include_router(meta_router, prefix="/api")
