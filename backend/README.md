@@ -11,6 +11,7 @@ uvicorn app.main:app --reload
 ```
 
 otherwise:
+
 ```bash
 cd backend
 .\venv\Scripts\activate
