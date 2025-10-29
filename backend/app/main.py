@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 # API endpoints
+from app.api.core import router as core_router
 from app.api.collections import router as collections_router
 from app.api.objects import router as objects_router
 from app.api.search import router as search_router
@@ -24,6 +25,7 @@ def health():
     return {"status": "ok"}
 
 # Mount API under /api
+app.include_router(core_router, prefix="/api")
 app.include_router(collections_router, prefix="/api")
 app.include_router(objects_router, prefix="/api")
 app.include_router(search_router, prefix="/api")
