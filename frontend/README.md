@@ -1,11 +1,79 @@
-# React + TypeScript + Vite
+# DB-Dash Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern React + TypeScript dashboard for Weaviate vector database management.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 📊 Database Tab
+- Real-time health monitoring
+- Weaviate connection status
+- Database metadata and version info
+- Module information display
+
+### 📁 Collections Tab
+- List all collections
+- View collection schemas and properties
+- Inspect property types and configurations
+- Delete collections with confirmation
+
+### 🔍 Objects Tab
+- **Browse Objects**: Paginated object browsing by collection
+- **Text Search**: Full-text search across collections
+- **Near Object Search**: Vector similarity search
+- Detailed object inspection with properties and vectors
+- Interactive object details dialog
+
+### 🎨 3D View Tab
+- Interactive 3D vector space visualization
+- Real-time vector projection (2D/3D)
+- Point cloud rendering with Three.js
+- Click points to view details
+- Configurable projection parameters
+- Color-coded point selection
+
+## Tech Stack
+
+- **React 19** with TypeScript
+- **Vite** for fast development
+- **Material-UI (MUI)** for UI components
+- **@react-three/fiber** & **@react-three/drei** for 3D visualization
+- **Three.js** for WebGL rendering
+- **Axios** for API communication
+
+## Getting Started
+
+1. Install dependencies:
+```bash
+npm install
+```
+
+2. Start the development server:
+```bash
+npm run dev
+```
+
+3. Make sure the backend is running on `http://localhost:8000`
+
+The app will be available at `http://localhost:5173`
+
+## Configuration
+
+The frontend expects the backend API to be available at `http://localhost:8000/api`. 
+
+You can modify this in `src/services/api.ts`:
+
+```typescript
+const API_BASE_URL = 'http://localhost:8000/api';
+```
+
+## Build for Production
+
+```bash
+npm run build
+```
+
+The build output will be in the `dist/` directory.
+
 
 ## React Compiler
 
