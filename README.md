@@ -1,2 +1,3 @@
-# db-dash
+# database-dashboard
+
 i use weaviate but theres no good local gui
