@@ -9,7 +9,18 @@ import {
   ThemeProvider,
   createTheme,
   CssBaseline,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 import DatabaseIcon from '@mui/icons-material/Storage';
 import CollectionsIcon from '@mui/icons-material/FolderOpen';
 import ObjectsIcon from '@mui/icons-material/DataObject';
@@ -154,10 +165,29 @@ function TabPanel(props: TabPanelProps) {
 
 function App() {
   const [tabValue, setTabValue] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
+
+  const handleMobileMenuToggle = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const handleMobileTabChange = (newValue: number) => {
+    setTabValue(newValue);
+    setMobileMenuOpen(false);
+  };
+
+  const tabs = [
+    { icon: <DatabaseIcon />, label: 'Database' },
+    { icon: <CollectionsIcon />, label: 'Collections' },
+    { icon: <ObjectsIcon />, label: 'Objects' },
+    { icon: <View3DIcon />, label: '3D View' },
+  ];
 
   return (
     <ThemeProvider theme={pastelTheme}>
@@ -169,51 +199,137 @@ function App() {
         background: 'linear-gradient(180deg, #F8FAFB 0%, #E8F4F8 100%)',
       }}>
         <AppBar position="static" elevation={0}>
-          <Box sx={{ display: 'flex', alignItems: 'center', px: 3, py: 1, position: 'relative' }}>
+          <Box sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            px: { xs: 2, md: 3 }, 
+            py: 1, 
+            position: 'relative' 
+          }}>
+            {isMobile && (
+              <IconButton
+                color="inherit"
+                aria-label="open menu"
+                edge="start"
+                onClick={handleMobileMenuToggle}
+                sx={{ mr: 2 }}
+              >
+                <MenuIcon />
+              </IconButton>
+            )}
             <Typography 
-              variant="h5" 
+              variant={isMobile ? "h6" : "h5"}
               component="div" 
               sx={{ 
-                position: 'absolute', 
-                left: 24, 
+                position: isMobile ? 'relative' : 'absolute', 
+                left: isMobile ? 0 : 24, 
                 fontWeight: 700,
                 color: 'white',
                 textShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                flexGrow: isMobile ? 1 : 0,
               }}
             >
-              Database Dashboard
+              {isMobile ? 'DB Dashboard' : 'Database Dashboard'}
             </Typography>
-            <Tabs
-              value={tabValue}
-              onChange={handleTabChange}
-              aria-label="dashboard tabs"
-              centered
-              sx={{ 
-                flexGrow: 1,
-                '& .MuiTab-root': {
-                  color: 'rgba(255, 255, 255, 0.8)',
-                  fontWeight: 600,
-                  minHeight: 64,
-                  '&.Mui-selected': {
-                    color: 'white',
+            {!isMobile && (
+              <Tabs
+                value={tabValue}
+                onChange={handleTabChange}
+                aria-label="dashboard tabs"
+                centered
+                sx={{ 
+                  flexGrow: 1,
+                  '& .MuiTab-root': {
+                    color: 'rgba(255, 255, 255, 0.8)',
+                    fontWeight: 600,
+                    minHeight: 64,
+                    '&.Mui-selected': {
+                      color: 'white',
+                    },
                   },
-                },
-                '& .MuiTabs-indicator': {
-                  backgroundColor: 'white',
-                  height: 3,
-                  borderRadius: '3px 3px 0 0',
-                },
-              }}
-            >
-              <Tab icon={<DatabaseIcon />} label="Database" iconPosition="start" />
-              <Tab icon={<CollectionsIcon />} label="Collections" iconPosition="start" />
-              <Tab icon={<ObjectsIcon />} label="Objects" iconPosition="start" />
-              <Tab icon={<View3DIcon />} label="3D View" iconPosition="start" />
-            </Tabs>
+                  '& .MuiTabs-indicator': {
+                    backgroundColor: 'white',
+                    height: 3,
+                    borderRadius: '3px 3px 0 0',
+                  },
+                }}
+              >
+                <Tab icon={<DatabaseIcon />} label="Database" iconPosition="start" />
+                <Tab icon={<CollectionsIcon />} label="Collections" iconPosition="start" />
+                <Tab icon={<ObjectsIcon />} label="Objects" iconPosition="start" />
+                <Tab icon={<View3DIcon />} label="3D View" iconPosition="start" />
+              </Tabs>
+            )}
           </Box>
         </AppBar>
 
-        <Container maxWidth="xl" sx={{ flex: 1, mt: 2 }}>
+        {/* Mobile Drawer Menu */}
+        <Drawer
+          anchor="left"
+          open={mobileMenuOpen}
+          onClose={handleMobileMenuToggle}
+          sx={{
+            '& .MuiDrawer-paper': {
+              width: 280,
+              background: 'linear-gradient(180deg, #F8FAFB 0%, #E8F4F8 100%)',
+              borderRadius: '0 8px 8px 0',
+            },
+          }}
+        >
+          <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Typography variant="h6" sx={{ fontWeight: 700, color: '#2C3E50' }}>
+              Menu
+            </Typography>
+            <IconButton onClick={handleMobileMenuToggle}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <List>
+            {tabs.map((tab, index) => (
+              <ListItem key={index} disablePadding>
+                <ListItemButton
+                  selected={tabValue === index}
+                  onClick={() => handleMobileTabChange(index)}
+                  sx={{
+                    '&.Mui-selected': {
+                      backgroundColor: 'rgba(124, 185, 232, 0.15)',
+                      borderLeft: '4px solid #7CB9E8',
+                      '&:hover': {
+                        backgroundColor: 'rgba(124, 185, 232, 0.25)',
+                      },
+                    },
+                    '&:hover': {
+                      backgroundColor: 'rgba(124, 185, 232, 0.08)',
+                    },
+                  }}
+                >
+                  <ListItemIcon sx={{ color: tabValue === index ? '#7CB9E8' : '#5A6C7D' }}>
+                    {tab.icon}
+                  </ListItemIcon>
+                  <ListItemText 
+                    primary={tab.label}
+                    primaryTypographyProps={{
+                      fontWeight: tabValue === index ? 600 : 400,
+                      color: tabValue === index ? '#2C3E50' : '#5A6C7D',
+                    }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Drawer>
+
+        <Container 
+          maxWidth="xl" 
+          sx={{ 
+            flex: 1, 
+            mt: { xs: 1, md: 2 },
+            px: { xs: 1.5, sm: 2, md: 3 },
+            width: '100%',
+            maxWidth: '100%',
+            overflowX: 'hidden',
+          }}
+        >
           <TabPanel value={tabValue} index={0}>
             <DatabaseTab />
           </TabPanel>

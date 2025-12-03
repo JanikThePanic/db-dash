@@ -27,6 +27,8 @@ import {
   DialogContent,
   IconButton,
   Chip,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import Grid from '@mui/material/GridLegacy';
 import SearchIcon from '@mui/icons-material/Search';
@@ -58,6 +60,9 @@ function TabPanel(props: TabPanelProps) {
 }
 
 export default function ObjectsTab() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  
   const [collections, setCollections] = useState<string[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<string>('');
   const [objects, setObjects] = useState<WeaviateObject[]>([]);
@@ -160,21 +165,21 @@ export default function ObjectsTab() {
 
   const renderObjectProperties = (properties: Record<string, any>) => {
     return (
-      <TableContainer component={Paper} sx={{ mt: 2 }}>
-        <Table size="small">
+      <TableContainer component={Paper} sx={{ mt: 2, overflowX: 'auto' }}>
+        <Table size="small" sx={{ minWidth: { xs: 250, sm: 400 } }}>
           <TableHead>
             <TableRow>
-              <TableCell>Property</TableCell>
-              <TableCell>Value</TableCell>
+              <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Property</TableCell>
+              <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Value</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {Object.entries(properties).map(([key, value]) => (
               <TableRow key={key}>
-                <TableCell component="th" scope="row">
+                <TableCell component="th" scope="row" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                   <strong>{key}</strong>
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, wordBreak: 'break-word' }}>
                   {typeof value === 'object'
                     ? JSON.stringify(value)
                     : String(value)}
@@ -188,31 +193,40 @@ export default function ObjectsTab() {
   };
 
   return (
-    <Stack spacing={4}>
+    <Stack spacing={{ xs: 2, md: 4 }} sx={{ width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
       <Box>
-        <Typography variant="h4" sx={{ mb: 0.5 }}>Objects & Search</Typography>
-        <Typography variant="body2" color="text.secondary">Browse, search, and explore your data objects</Typography>
+        <Typography variant="h4" sx={{ mb: 0.5, fontSize: { xs: '1.75rem', md: '2.125rem' } }}>
+          Objects & Search
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Browse, search, and explore your data objects
+        </Typography>
       </Box>
 
       {error && <Alert severity="error" sx={{ borderRadius: 3 }}>{error}</Alert>}
 
-      <Card>
+      <Card sx={{ width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
         <CardContent sx={{ p: 3 }}>
           <Tabs 
             value={tabValue} 
             onChange={(_, v) => setTabValue(v)}
+            variant="scrollable"
+            scrollButtons="auto"
+            allowScrollButtonsMobile
             sx={{
               mb: 2,
               '& .MuiTab-root': {
                 fontWeight: 600,
                 textTransform: 'none',
-                fontSize: '1rem',
+                fontSize: { xs: '0.8rem', sm: '1rem' },
+                minWidth: { xs: 90, sm: 160 },
+                px: { xs: 1, sm: 2 },
               },
             }}
           >
-            <Tab label="📋 Browse Objects" />
-            <Tab label="🔍 Text Search" />
-            <Tab label="🎯 Near Object Search" />
+            <Tab label={isMobile ? "📋 Browse" : "📋 Browse Objects"} />
+            <Tab label={isMobile ? "🔍 Search" : "🔍 Text Search"} />
+            <Tab label={isMobile ? "🎯 Near" : "🎯 Near Object Search"} />
           </Tabs>
 
           {/* Browse Tab */}
@@ -257,30 +271,30 @@ export default function ObjectsTab() {
             </Grid>
 
             {objects.length > 0 && (
-              <TableContainer component={Paper} sx={{ mt: 3 }}>
-                <Table>
+              <TableContainer component={Paper} sx={{ mt: 3, overflowX: 'auto' }}>
+                <Table sx={{ minWidth: { xs: 300, sm: 650 } }}>
                   <TableHead>
                     <TableRow>
-                      <TableCell>ID</TableCell>
-                      <TableCell>Properties</TableCell>
-                      <TableCell align="right">Actions</TableCell>
+                      <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>ID</TableCell>
+                      <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Properties</TableCell>
+                      <TableCell align="right" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Actions</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {objects.map((obj) => (
                       <TableRow key={obj.id}>
                         <TableCell>
-                          <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
+                          <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: { xs: '0.7rem', sm: '0.875rem' } }}>
                             {obj.id.substring(0, 8)}...
                           </Typography>
                         </TableCell>
                         <TableCell>
                           <Box display="flex" gap={1} flexWrap="wrap">
                             {Object.keys(obj.properties).slice(0, 3).map((key) => (
-                              <Chip key={key} label={`${key}`} size="small" />
+                              <Chip key={key} label={`${key}`} size="small" sx={{ fontSize: { xs: '0.65rem', sm: '0.8125rem' } }} />
                             ))}
                             {Object.keys(obj.properties).length > 3 && (
-                              <Chip label={`+${Object.keys(obj.properties).length - 3}`} size="small" />
+                              <Chip label={`+${Object.keys(obj.properties).length - 3}`} size="small" sx={{ fontSize: { xs: '0.65rem', sm: '0.8125rem' } }} />
                             )}
                           </Box>
                         </TableCell>
@@ -343,34 +357,34 @@ export default function ObjectsTab() {
             </Grid>
 
             {searchResults.length > 0 && (
-              <TableContainer component={Paper} sx={{ mt: 3 }}>
-                <Table>
+              <TableContainer component={Paper} sx={{ mt: 3, overflowX: 'auto' }}>
+                <Table sx={{ minWidth: { xs: 300, sm: 650 } }}>
                   <TableHead>
                     <TableRow>
-                      <TableCell>ID</TableCell>
-                      <TableCell>Collection</TableCell>
-                      <TableCell>Properties</TableCell>
-                      <TableCell>Score</TableCell>
-                      <TableCell align="right">Actions</TableCell>
+                      <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>ID</TableCell>
+                      <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Collection</TableCell>
+                      <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, display: { xs: 'none', sm: 'table-cell' } }}>Properties</TableCell>
+                      <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Score</TableCell>
+                      <TableCell align="right" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Actions</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {searchResults.map((result, idx) => (
                       <TableRow key={idx}>
                         <TableCell>
-                          <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
+                          <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: { xs: '0.7rem', sm: '0.875rem' } }}>
                             {result.id.substring(0, 8)}...
                           </Typography>
                         </TableCell>
-                        <TableCell>{result.collection}</TableCell>
-                        <TableCell>
+                        <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>{result.collection}</TableCell>
+                        <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
                           <Box display="flex" gap={1} flexWrap="wrap">
                             {Object.keys(result.properties).slice(0, 3).map((key) => (
-                              <Chip key={key} label={key} size="small" />
+                              <Chip key={key} label={key} size="small" sx={{ fontSize: { xs: '0.65rem', sm: '0.8125rem' } }} />
                             ))}
                           </Box>
                         </TableCell>
-                        <TableCell>
+                        <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                           {result.score?.toFixed(4) || result.distance?.toFixed(4) || 'N/A'}
                         </TableCell>
                         <TableCell align="right">
@@ -491,8 +505,15 @@ export default function ObjectsTab() {
         onClose={() => setDetailsOpen(false)}
         maxWidth="md"
         fullWidth
+        fullScreen={false}
+        sx={{
+          '& .MuiDialog-paper': {
+            m: { xs: 2, sm: 4 },
+            maxHeight: { xs: '90vh', sm: '90vh' },
+          },
+        }}
       >
-        <DialogTitle>
+        <DialogTitle sx={{ fontSize: { xs: '1.125rem', sm: '1.5rem' } }}>
           Object Details
           <IconButton
             aria-label="close"
@@ -506,25 +527,25 @@ export default function ObjectsTab() {
           {selectedObject && (
             <Stack spacing={2}>
               <Box>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant="subtitle2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                   ID
                 </Typography>
-                <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
+                <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: { xs: '0.75rem', sm: '0.875rem' }, wordBreak: 'break-all' }}>
                   {selectedObject.id}
                 </Typography>
               </Box>
 
               {selectedObject.collection && (
                 <Box>
-                  <Typography variant="subtitle2" color="text.secondary">
+                  <Typography variant="subtitle2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                     Collection
                   </Typography>
-                  <Typography variant="body2">{selectedObject.collection}</Typography>
+                  <Typography variant="body2" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>{selectedObject.collection}</Typography>
                 </Box>
               )}
 
               <Box>
-                <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                   Properties
                 </Typography>
                 {renderObjectProperties(selectedObject.properties)}
@@ -532,10 +553,10 @@ export default function ObjectsTab() {
 
               {selectedObject.vector && (
                 <Box>
-                  <Typography variant="subtitle2" color="text.secondary">
+                  <Typography variant="subtitle2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                     Vector (first 10 dimensions)
                   </Typography>
-                  <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
+                  <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: { xs: '0.65rem', sm: '0.75rem' }, wordBreak: 'break-all' }}>
                     [{selectedObject.vector.slice(0, 10).map(v => v.toFixed(4)).join(', ')}
                     {selectedObject.vector.length > 10 && `, ... (${selectedObject.vector.length} total)`}]
                   </Typography>

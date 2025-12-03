@@ -71,25 +71,36 @@ export default function DatabaseTab() {
   }
 
   return (
-    <Stack spacing={4}>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+    <Stack spacing={{ xs: 2, md: 4 }} sx={{ width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
+      <Box 
+        display="flex" 
+        flexDirection={{ xs: 'column', sm: 'row' }}
+        justifyContent="space-between" 
+        alignItems={{ xs: 'flex-start', sm: 'center' }}
+        gap={{ xs: 2, sm: 0 }}
+      >
         <Box>
-          <Typography variant="h4" sx={{ mb: 0.5 }}>Database Overview</Typography>
-          <Typography variant="body2" color="text.secondary">Monitor your database health and status</Typography>
+          <Typography variant="h4" sx={{ mb: 0.5, fontSize: { xs: '1.75rem', md: '2.125rem' } }}>
+            Database Overview
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Monitor your database health and status
+          </Typography>
         </Box>
         <Button 
           startIcon={<RefreshIcon />} 
           variant="contained" 
           onClick={loadData}
-          sx={{ borderRadius: 3, px: 3 }}
+          sx={{ borderRadius: 3, px: 3, width: { xs: '100%', sm: 'auto' } }}
         >
           Refresh
         </Button>
       </Box>
 
-      <Grid container spacing={3}>
-        {/* Health Status */}
-        <Grid item xs={12} md={4}>
+      <Box sx={{ width: '100%', overflow: 'hidden' }}>
+        <Grid container spacing={{ xs: 2, md: 3 }}>
+          {/* Health Status */}
+          <Grid item xs={12} md={4}>
           <Card sx={{ 
             background: health?.status === 'ok' 
               ? 'linear-gradient(135deg, #D4EBD9 0%, #A8D5BA 100%)'
@@ -193,22 +204,22 @@ export default function DatabaseTab() {
         {/* Metadata */}
         <Grid item xs={12}>
           <Card>
-            <CardContent sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, mb: 3 }}>
+            <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+              <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, mb: { xs: 2, sm: 3 }, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
                 📊 Metadata
               </Typography>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
-                  <Typography color="text.secondary">Hostname</Typography>
-                  <Typography variant="body1">{meta?.hostname || 'N/A'}</Typography>
+                  <Typography color="text.secondary" sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>Hostname</Typography>
+                  <Typography variant="body1" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>{meta?.hostname || 'N/A'}</Typography>
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <Typography color="text.secondary">Version</Typography>
-                  <Typography variant="body1">{meta?.version || 'N/A'}</Typography>
+                  <Typography color="text.secondary" sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>Version</Typography>
+                  <Typography variant="body1" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>{meta?.version || 'N/A'}</Typography>
                 </Grid>
                 {meta?.modules && (
                   <Grid item xs={12}>
-                    <Typography color="text.secondary" gutterBottom sx={{ fontWeight: 600 }}>
+                    <Typography color="text.secondary" gutterBottom sx={{ fontWeight: 600, fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                       Modules
                     </Typography>
                     <Box display="flex" gap={1} flexWrap="wrap">
@@ -221,6 +232,7 @@ export default function DatabaseTab() {
                             background: 'linear-gradient(135deg, #B4D7F0 0%, #7CB9E8 100%)',
                             color: 'white',
                             fontWeight: 600,
+                            fontSize: { xs: '0.7rem', sm: '0.8125rem' },
                           }}
                         />
                       ))}
@@ -232,6 +244,7 @@ export default function DatabaseTab() {
           </Card>
         </Grid>
       </Grid>
+      </Box>
     </Stack>
   );
 }

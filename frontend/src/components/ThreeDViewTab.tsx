@@ -149,10 +149,14 @@ export default function ThreeDViewTab() {
   };
 
   return (
-    <Stack spacing={4}>
+    <Stack spacing={{ xs: 2, md: 4 }} sx={{ width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
       <Box>
-        <Typography variant="h4" sx={{ mb: 0.5 }}>3D Vector Projection</Typography>
-        <Typography variant="body2" color="text.secondary">Visualize your vector embeddings in 3D space</Typography>
+        <Typography variant="h4" sx={{ mb: 0.5, fontSize: { xs: '1.75rem', md: '2.125rem' } }}>
+          3D Vector Projection
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Visualize your vector embeddings in 3D space
+        </Typography>
       </Box>
 
       {error && <Alert severity="error" sx={{ borderRadius: 3 }}>{error}</Alert>}
@@ -160,7 +164,7 @@ export default function ThreeDViewTab() {
       <Card>
         <CardContent>
           <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={3}>
               <FormControl fullWidth>
                 <InputLabel>Collection</InputLabel>
                 <Select
@@ -228,14 +232,15 @@ export default function ThreeDViewTab() {
       </Card>
 
       {points.length > 0 && (
-        <Grid container spacing={3}>
+        <Box sx={{ width: '100%', overflow: 'hidden' }}>
+          <Grid container spacing={3}>
           <Grid item xs={12} lg={9}>
             <Card>
-              <CardContent sx={{ p: 3 }}>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, mb: 2 }}>
+              <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, mb: 2, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
                   🌌 Vector Space ({points.length} points)
                 </Typography>
-                <Box sx={{ height: '600px', width: '100%', bgcolor: '#000' }}>
+                <Box sx={{ height: { xs: '400px', sm: '500px', md: '600px' }, width: '100%', bgcolor: '#000' }}>
                   <Canvas>
                     <PerspectiveCamera makeDefault position={[5, 5, 5]} />
                     <OrbitControls enableDamping dampingFactor={0.05} />
@@ -249,7 +254,7 @@ export default function ThreeDViewTab() {
                     />
                   </Canvas>
                 </Box>
-                <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block', fontSize: { xs: '0.65rem', sm: '0.75rem' } }}>
                   Click and drag to rotate • Scroll to zoom • Click points to view details
                 </Typography>
               </CardContent>
@@ -258,19 +263,19 @@ export default function ThreeDViewTab() {
 
           <Grid item xs={12} lg={3}>
             <Card>
-              <CardContent sx={{ p: 3 }}>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 700 }}>
+              <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
                   {selectedPoint ? '🎯 Selected Point' : '📍 Point Details'}
                 </Typography>
                 {selectedPoint ? (
                   <Stack spacing={2}>
                     <Box>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }}>
                         ID
                       </Typography>
                       <Typography
                         variant="body2"
-                        sx={{ fontFamily: 'monospace', fontSize: '0.75rem', wordBreak: 'break-all' }}
+                        sx={{ fontFamily: 'monospace', fontSize: { xs: '0.65rem', sm: '0.75rem' }, wordBreak: 'break-all' }}
                       >
                         {selectedPoint.id}
                       </Typography>
@@ -359,6 +364,7 @@ export default function ThreeDViewTab() {
             </Card>
           </Grid>
         </Grid>
+        </Box>
       )}
 
       {!loading && points.length === 0 && selectedCollection && (

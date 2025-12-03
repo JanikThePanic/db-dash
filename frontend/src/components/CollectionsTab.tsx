@@ -95,17 +95,27 @@ export default function CollectionsTab() {
   }
 
   return (
-    <Stack spacing={4}>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+    <Stack spacing={{ xs: 2, md: 4 }} sx={{ width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
+      <Box 
+        display="flex" 
+        flexDirection={{ xs: 'column', sm: 'row' }}
+        justifyContent="space-between" 
+        alignItems={{ xs: 'flex-start', sm: 'center' }}
+        gap={{ xs: 2, sm: 0 }}
+      >
         <Box>
-          <Typography variant="h4" sx={{ mb: 0.5 }}>Collections</Typography>
-          <Typography variant="body2" color="text.secondary">Manage and explore your data collections</Typography>
+          <Typography variant="h4" sx={{ mb: 0.5, fontSize: { xs: '1.75rem', md: '2.125rem' } }}>
+            Collections
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Manage and explore your data collections
+          </Typography>
         </Box>
         <Button 
           startIcon={<RefreshIcon />} 
           variant="contained" 
           onClick={loadCollections}
-          sx={{ borderRadius: 3, px: 3 }}
+          sx={{ borderRadius: 3, px: 3, width: { xs: '100%', sm: 'auto' } }}
         >
           Refresh
         </Button>
@@ -113,12 +123,13 @@ export default function CollectionsTab() {
 
       {error && <Alert severity="error">{error}</Alert>}
 
-      <Grid container spacing={3}>
-        {/* Collections List */}
-        <Grid item xs={12} md={4}>
-          <Card>
-            <CardContent sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, mb: 3 }}>
+      <Box sx={{ width: '100%', overflow: 'hidden' }}>
+        <Grid container spacing={{ xs: 2, md: 3 }}>
+          {/* Collections List */}
+          <Grid item xs={12} md={4}>
+          <Card sx={{ width: '100%', maxWidth: '100%' }}>
+            <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+              <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, mb: { xs: 2, sm: 3 }, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
                 📁 All Collections ({collections.length})
               </Typography>
               <List>
@@ -173,8 +184,8 @@ export default function CollectionsTab() {
         {/* Collection Details */}
         <Grid item xs={12} md={8}>
           {selectedCollection ? (
-            <Card>
-              <CardContent sx={{ p: 3 }}>
+            <Card sx={{ width: '100%', maxWidth: '100%' }}>
+              <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
                 <Typography variant="h5" gutterBottom sx={{ fontWeight: 700, mb: 2 }}>
                   {selectedCollection.name}
                 </Typography>
@@ -261,16 +272,27 @@ export default function CollectionsTab() {
           )}
         </Grid>
       </Grid>
+      </Box>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
-        <DialogTitle>Delete Collection</DialogTitle>
+      <Dialog 
+        open={deleteDialogOpen} 
+        onClose={() => setDeleteDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        sx={{
+          '& .MuiDialog-paper': {
+            m: { xs: 2, sm: 4 },
+          },
+        }}
+      >
+        <DialogTitle sx={{ fontSize: { xs: '1.125rem', sm: '1.5rem' } }}>Delete Collection</DialogTitle>
         <DialogContent>
-          <Typography gutterBottom>
+          <Typography gutterBottom sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
             Are you sure you want to delete the collection{' '}
             <strong>{collectionToDelete}</strong>?
           </Typography>
-          <Typography sx={{ color: '#D32F2F', fontWeight: 600 }} gutterBottom>
+          <Typography sx={{ color: '#D32F2F', fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' } }} gutterBottom>
             This action cannot be undone!
           </Typography>
           <TextField
@@ -279,9 +301,10 @@ export default function CollectionsTab() {
             value={confirmText}
             onChange={(e) => setConfirmText(e.target.value)}
             sx={{ mt: 2 }}
+            size="small"
           />
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
           <Button
             onClick={handleDeleteConfirm}
