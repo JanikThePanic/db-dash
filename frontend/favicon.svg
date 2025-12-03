@@ -1,0 +1,71 @@
+<svg
+  width="32"
+  height="32"
+  viewBox="0 0 32 32"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <defs>
+    <!-- Gradient background: purple → blue -->
+    <linearGradient id="vg-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#9333ea"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded square background so it reads clearly on light/dark UIs -->
+  <rect
+    x="2"
+    y="2"
+    width="28"
+    height="28"
+    rx="8"
+    fill="url(#vg-grad)"
+  />
+
+  <!-- 3D-ish data "volume" (cube / cell stack) -->
+  <!-- Top face -->
+  <path
+    d="M16 9 L22 12.5 L16 16 L10 12.5 Z"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="1.6"
+    stroke-linejoin="round"
+  />
+
+  <!-- Vertical edges -->
+  <path
+    d="M16 16 L16 22
+       M10 12.5 L10 18.5
+       M22 12.5 L22 18.5"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="1.6"
+    stroke-linecap="round"
+  />
+
+  <!-- Bottom face -->
+  <path
+    d="M10 18.5 L16 22 L22 18.5"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="1.6"
+    stroke-linejoin="round"
+  />
+
+  <!-- Data nodes at key vertices -->
+  <circle cx="16" cy="9" r="1.6" fill="#ffffff"/>
+  <circle cx="22" cy="12.5" r="1.6" fill="#ffffff"/>
+  <circle cx="10" cy="12.5" r="1.6" fill="#ffffff"/>
+  <circle cx="16" cy="22" r="1.6" fill="#ffffff"/>
+
+  <!-- Subtle inner connection (suggesting a network/graph) -->
+  <path
+    d="M16 9 L16 16 L22 18.5"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="1.2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    opacity="0.85"
+  />
+</svg>

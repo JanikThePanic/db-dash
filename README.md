@@ -1,5 +1,9 @@
 # database-dashboard
 
+<p align="left">
+    <img src="frontend/favicon.svg" alt="Database Dashboard" width="100" height="100">
+</p>
+
 i use weaviate a lot at work but theres no good local gui
 
 so heres a vibe-coded frontend + my python backend for it
