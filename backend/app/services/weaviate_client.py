@@ -23,13 +23,13 @@ def delete_collection(name: str):
 # --- Objects ---
 def list_objects(name: str, limit=50, cursor=None, where=None, fields=None, include_vector=False):
     if not get_collection(name):
-        return {"items": [], "page": {"limit": limit, "nextCursor": None}}
-    items = [
+        return {"objects": [], "cursor": None, "hasMore": False}
+    objects = [
         {"id": f"{name.lower()}-{i:03d}", "properties": {"title": f"{name} {i}", "content": "lorem ipsum"}}
         | ({"vector": [0.1, 0.2, 0.3]} if include_vector else {})
         for i in range(1, min(limit, 10) + 1)
     ]
-    return {"items": items, "page": {"limit": limit, "nextCursor": None}}
+    return {"objects": objects, "cursor": None, "hasMore": False}
 
 def get_object(name: str, id: str, include_vector=False):
     if not get_collection(name):
@@ -53,20 +53,20 @@ def search_text(q: str, collection: str | None, limit: int, fields: str | None):
         {"id": f"hit-{i}", "score": 1.0 - i * 0.1, "properties": {"text": f"Result for '{q}' #{i}"}}
         for i in range(min(limit, 5))
     ]
-    return {"query": q, "collection": collection, "items": hits}
+    return {"query": q, "collection": collection, "results": hits}
 
 def near_vector(vector, collection: str | None, limit: int):
     return {
         "anchor": {"vector_dim": len(vector)},
         "collection": collection,
-        "items": [{"id": f"vec-{i}", "score": 0.9 - i * 0.05} for i in range(min(limit, 5))],
+        "results": [{"id": f"vec-{i}", "score": 0.9 - i * 0.05, "properties": {}} for i in range(min(limit, 5))],
     }
 
 def near_object(collection: str, id: str, limit: int):
     if not get_collection(collection):
         return None
     return {"anchor": {"collection": collection, "id": id},
-            "items": [{"id": f"near-{i}", "score": 0.88 - i * 0.04} for i in range(min(limit, 5))]}
+            "results": [{"id": f"near-{i}", "score": 0.88 - i * 0.04, "properties": {}} for i in range(min(limit, 5))]}
 
 # --- Projection ---
 def project_vectors(collection: str, limit: int, dims: int, include_props=None):
