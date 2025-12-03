@@ -4,24 +4,30 @@
     <img src="frontend/favicon.svg" alt="Database Dashboard" width="100" height="100">
 </p>
 
-i use weaviate a lot at work but theres no good local gui
+i use [weaviate](https://docs.weaviate.io/weaviate/quickstart/local) a lot at work but theres no good local gui
 
-so heres a vibe-coded frontend + my python backend for it
+so heres a vibe-coded frontend + my python backend to the rescue
 
-## setup
+## user guide
 
-just run it as a docker container
+1. install [docker](https://www.docker.com/products/docker-desktop/)
 
-(make sure your weaviate instance is running first and is exposed to a port)
+2. download the ```docker-compose.yml``` file from this repo
 
-```bash
-```
+3. cmd into the folder where you downloaded the ```docker-compose.yml``` file
+
+4. run the following command to start the app: ```docker compose up```
+
+(make sure your weaviate db instance is running and is exposed to a port)
 
 ## sample weaviate instance
 
 want to just demo the app?
 
-you can run a sample weaviate instance with some fake data like so:
+check out [the static webpage](janik.codes) for a live demo. 
 
-```bash
+or you can run a sample weaviate db instance locally with some fake data:
+
+``` bash
+cd fef
 ```
