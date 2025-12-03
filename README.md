@@ -12,3 +12,12 @@ just run it as a docker container
 
 ```bash
 ```
+
+## sample weaviate instance
+
+want to just demo the app?
+
+you can run a sample weaviate instance with some fake data like so:
+
+```bash
+```
