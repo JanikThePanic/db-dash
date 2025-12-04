@@ -229,7 +229,7 @@ function App() {
                 flexGrow: isMobile ? 1 : 0,
               }}
             >
-              {isMobile ? 'DB Dashboard' : 'Database Dashboard'}
+              {isMobile ? 'DB Dash' : 'DB Dash'}
             </Typography>
             {!isMobile && (
               <Tabs

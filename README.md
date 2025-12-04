@@ -1,4 +1,4 @@
-# database-dashboard
+# db-dash
 
 <p align="left">
     <img src="frontend/favicon.svg" alt="Database Dashboard" width="100" height="100">
