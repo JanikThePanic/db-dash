@@ -9,6 +9,8 @@ from app.api.search import router as search_router
 from app.api.projection import router as projection_router
 from app.api.meta import router as meta_router
 
+from app.services.weaviate_client import weaviate
+
 app = FastAPI(title="db-dash backend")
 
 app.add_middleware(

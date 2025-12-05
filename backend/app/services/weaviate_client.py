@@ -1,3 +1,91 @@
+import weaviate
+from weaviate.config import AdditionalConfig, Timeout
+
+from app.core.Config import config
+
+class Weaviate:
+    """
+    Client wrapper for Weaviate operations.
+    """
+
+    def __init__(self):
+        """
+        Initialize Weaviate client wrapper (connection happens lazily).
+        """
+        self.client: weaviate.WeaviateClient | None = None
+        self._connection_attempted = False
+
+    def get_client(self):
+        """
+        Get or create the Weaviate client connection (lazy initialization).
+        """
+        if not self._connection_attempted:
+            self.connect_weaviate()
+        return self.client
+
+    def connect_weaviate(self):
+        """
+        Connect to Weaviate instance using configuration settings.
+        """
+        if self._connection_attempted:
+            return
+        
+        self._connection_attempted = True
+        
+        try:
+            HTTP_HOST = config.database_url
+            HTTP_PORT = config.database_port
+            
+            # Configure with shorter timeout and skip initial checks for faster startup
+            additional_config = AdditionalConfig(
+                timeout=Timeout(init=3, query=30, insert=30)
+            )
+            
+            client = weaviate.connect_to_local(
+                host=HTTP_HOST,
+                port=HTTP_PORT,
+                additional_config=additional_config,
+                skip_init_checks=True
+            )
+            self.client = client
+        except Exception as e:
+            print(f"Warning: Could not connect to Weaviate: {e}")
+            self.client = None
+
+    def get_meta(self):
+        """
+        Get metadata about the Weaviate instance.
+        """
+        client = self.get_client()
+        return client.get_meta() if client else None
+    
+    def ping(self):
+        """
+        Ping the Weaviate instance to check connectivity.
+        """
+        client = self.get_client()
+        return client.is_ready() if client else False
+            
+weaviate_client = Weaviate()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # All dummy logic for now; swap with real Weaviate SDK later.
 
 # --- Collections / Schema ---

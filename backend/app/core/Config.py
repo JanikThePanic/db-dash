@@ -4,7 +4,7 @@ class Config:
     """
 
     def __init__(self):
-        self._database_url = "weaviate_db"
+        self._database_url = "localhost"
         self._database_port = 3131
         self._api_keys = {}
 
