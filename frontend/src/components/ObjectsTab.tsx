@@ -255,6 +255,7 @@ export default function ObjectsTab() {
                   label="Limit"
                   value={limit}
                   onChange={(e) => setLimit(Number(e.target.value))}
+                  inputProps={{ min: 1, max: 5000 }}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
