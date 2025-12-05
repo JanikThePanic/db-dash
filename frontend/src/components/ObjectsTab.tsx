@@ -275,16 +275,20 @@ export default function ObjectsTab() {
                 <Table sx={{ minWidth: { xs: 300, sm: 650 } }}>
                   <TableHead>
                     <TableRow>
+                      <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, width: 50 }}>#</TableCell>
                       <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>ID</TableCell>
                       <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Properties</TableCell>
                       <TableCell align="right" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Actions</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {objects.map((obj) => {
+                    {objects.map((obj, index) => {
                       const objectId = getObjectId(obj);
                       return (
                       <TableRow key={objectId}>
+                        <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                          {index + 1}
+                        </TableCell>
                         <TableCell>
                           <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: { xs: '0.7rem', sm: '0.875rem' } }}>
                             {objectId.substring(0, 8)}...
@@ -363,6 +367,7 @@ export default function ObjectsTab() {
                 <Table sx={{ minWidth: { xs: 300, sm: 650 } }}>
                   <TableHead>
                     <TableRow>
+                      <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, width: 50 }}>#</TableCell>
                       <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>ID</TableCell>
                       <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Collection</TableCell>
                       <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, display: { xs: 'none', sm: 'table-cell' } }}>Properties</TableCell>
@@ -375,6 +380,9 @@ export default function ObjectsTab() {
                       const resultId = getObjectId(result);
                       return (
                       <TableRow key={idx}>
+                        <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                          {idx + 1}
+                        </TableCell>
                         <TableCell>
                           <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: { xs: '0.7rem', sm: '0.875rem' } }}>
                             {resultId.substring(0, 8)}...
@@ -461,6 +469,7 @@ export default function ObjectsTab() {
                 <Table>
                   <TableHead>
                     <TableRow>
+                      <TableCell sx={{ width: 50 }}>#</TableCell>
                       <TableCell>ID</TableCell>
                       <TableCell>Properties</TableCell>
                       <TableCell>Distance</TableCell>
@@ -472,6 +481,9 @@ export default function ObjectsTab() {
                       const resultId = getObjectId(result);
                       return (
                       <TableRow key={idx}>
+                        <TableCell>
+                          {idx + 1}
+                        </TableCell>
                         <TableCell>
                           <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
                             {resultId.substring(0, 8)}...
