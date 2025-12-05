@@ -14,6 +14,7 @@ class Weaviate:
         """
         self.client: weaviate.WeaviateClient | None = None
         self._connection_attempted = False
+        self.connect_weaviate()
 
     def get_client(self):
         """

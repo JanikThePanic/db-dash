@@ -53,7 +53,7 @@ export default function CollectionsTab() {
   const loadCollectionDetails = async (name: string) => {
     try {
       const response = await getCollection(name);
-      setSelectedCollection(response.data);
+      setSelectedCollection(response.data.collection);
     } catch (err: any) {
       setError(err.message || 'Failed to load collection details');
     }
@@ -197,11 +197,11 @@ export default function CollectionsTab() {
               )}
 
                 <Grid container spacing={2} sx={{ mb: 3 }}>
-                  {selectedCollection.vectorizer && (
+                  {selectedCollection.vector_config?.default?.vectorizer?.vectorizer && (
                     <Grid item xs={12} sm={6}>
                       <Typography color="text.secondary" sx={{ fontWeight: 600, mb: 1 }}>Vectorizer</Typography>
                       <Chip 
-                        label={selectedCollection.vectorizer} 
+                        label={selectedCollection.vector_config.default.vectorizer.vectorizer} 
                         sx={{ 
                           background: 'linear-gradient(135deg, #C3B1E1 0%, #E0D5F5 100%)',
                           color: 'white',
@@ -210,11 +210,11 @@ export default function CollectionsTab() {
                       />
                     </Grid>
                   )}
-                  {selectedCollection.vectorIndexType && (
+                  {selectedCollection.vector_config?.default?.vector_index_config?.distance_metric && (
                     <Grid item xs={12} sm={6}>
-                      <Typography color="text.secondary" sx={{ fontWeight: 600, mb: 1 }}>Vector Index</Typography>
+                      <Typography color="text.secondary" sx={{ fontWeight: 600, mb: 1 }}>Distance Metric</Typography>
                       <Chip 
-                        label={selectedCollection.vectorIndexType}
+                        label={selectedCollection.vector_config.default.vector_index_config.distance_metric}
                         sx={{ 
                           background: 'linear-gradient(135deg, #B4D7F0 0%, #7CB9E8 100%)',
                           color: 'white',
@@ -238,19 +238,21 @@ export default function CollectionsTab() {
                           {prop.name}
                         </Typography>
                         <Box display="flex" gap={1} flexWrap="wrap" mt={1}>
-                          {prop.dataType.map((type) => (
-                            <Chip key={type} label={type} size="small" color="primary" />
-                          ))}
+                          <Chip label={prop.data_type} size="small" color="primary" />
+                          {prop.tokenization && (
+                            <Chip label={`tokenization: ${prop.tokenization}`} size="small" variant="outlined" />
+                          )}
                         </Box>
                         {prop.description && (
                           <Typography variant="body2" color="text.secondary" mt={1}>
                             {prop.description}
                           </Typography>
                         )}
-                        {(prop.indexFilterable || prop.indexSearchable) && (
+                        {(prop.index_filterable || prop.index_searchable || prop.index_range_filters) && (
                           <Box display="flex" gap={1} mt={1}>
-                            {prop.indexFilterable && <Chip label="Filterable" size="small" />}
-                            {prop.indexSearchable && <Chip label="Searchable" size="small" />}
+                            {prop.index_filterable && <Chip label="Filterable" size="small" />}
+                            {prop.index_searchable && <Chip label="Searchable" size="small" />}
+                            {prop.index_range_filters && <Chip label="Range Filters" size="small" />}
                           </Box>
                         )}
                       </ListItem>

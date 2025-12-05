@@ -1,12 +1,12 @@
 import axios from 'axios';
 import type {
   Collection,
+  CollectionResponse,
   WeaviateObject,
   ObjectsResponse,
   MetaResponse,
   SearchResult,
   ProjectionResponse,
-  SchemaResponse,
 } from '../types';
 
 const API_BASE_URL = 'http://localhost:8000/api';
@@ -25,8 +25,7 @@ export const ping = () => api.get('/ping');
 
 // Collections
 export const listCollections = () => api.get<{ collections: string[] }>('/collections');
-export const getCollection = (name: string) => api.get<Collection>(`/collections/${name}`);
-export const getSchema = () => api.get<SchemaResponse>('/schema');
+export const getCollection = (name: string) => api.get<{ collection: Collection }>(`/collections/${name}`);
 export const deleteCollection = (name: string, confirm: string) =>
   api.delete(`/collections/${name}`, { params: { confirm } });
 
