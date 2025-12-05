@@ -59,6 +59,11 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
+// Helper to get ID from object (supports both uuid and id fields)
+const getObjectId = (obj: WeaviateObject | SearchResult): string => {
+  return obj.uuid || obj.id || '';
+};
+
 export default function ObjectsTab() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -281,11 +286,13 @@ export default function ObjectsTab() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {objects.map((obj) => (
-                      <TableRow key={obj.id}>
+                    {objects.map((obj) => {
+                      const objectId = getObjectId(obj);
+                      return (
+                      <TableRow key={objectId}>
                         <TableCell>
                           <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: { xs: '0.7rem', sm: '0.875rem' } }}>
-                            {obj.id.substring(0, 8)}...
+                            {objectId.substring(0, 8)}...
                           </Typography>
                         </TableCell>
                         <TableCell>
@@ -301,13 +308,13 @@ export default function ObjectsTab() {
                         <TableCell align="right">
                           <IconButton
                             size="small"
-                            onClick={() => handleViewDetails(selectedCollection, obj.id)}
+                            onClick={() => handleViewDetails(selectedCollection, objectId)}
                           >
                             <VisibilityIcon />
                           </IconButton>
                         </TableCell>
                       </TableRow>
-                    ))}
+                    );})}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -369,11 +376,13 @@ export default function ObjectsTab() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {searchResults.map((result, idx) => (
+                    {searchResults.map((result, idx) => {
+                      const resultId = getObjectId(result);
+                      return (
                       <TableRow key={idx}>
                         <TableCell>
                           <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: { xs: '0.7rem', sm: '0.875rem' } }}>
-                            {result.id.substring(0, 8)}...
+                            {resultId.substring(0, 8)}...
                           </Typography>
                         </TableCell>
                         <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>{result.collection}</TableCell>
@@ -390,13 +399,13 @@ export default function ObjectsTab() {
                         <TableCell align="right">
                           <IconButton
                             size="small"
-                            onClick={() => handleViewDetails(result.collection || '', result.id)}
+                            onClick={() => handleViewDetails(result.collection || '', resultId)}
                           >
                             <VisibilityIcon />
                           </IconButton>
                         </TableCell>
                       </TableRow>
-                    ))}
+                    );})}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -464,11 +473,13 @@ export default function ObjectsTab() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {searchResults.map((result, idx) => (
+                    {searchResults.map((result, idx) => {
+                      const resultId = getObjectId(result);
+                      return (
                       <TableRow key={idx}>
                         <TableCell>
                           <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
-                            {result.id.substring(0, 8)}...
+                            {resultId.substring(0, 8)}...
                           </Typography>
                         </TableCell>
                         <TableCell>
@@ -484,13 +495,13 @@ export default function ObjectsTab() {
                         <TableCell align="right">
                           <IconButton
                             size="small"
-                            onClick={() => handleViewDetails(nearObjectCollection, result.id)}
+                            onClick={() => handleViewDetails(nearObjectCollection, resultId)}
                           >
                             <VisibilityIcon />
                           </IconButton>
                         </TableCell>
                       </TableRow>
-                    ))}
+                    );})}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -531,7 +542,7 @@ export default function ObjectsTab() {
                   ID
                 </Typography>
                 <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: { xs: '0.75rem', sm: '0.875rem' }, wordBreak: 'break-all' }}>
-                  {selectedObject.id}
+                  {getObjectId(selectedObject)}
                 </Typography>
               </Box>
 
@@ -551,7 +562,7 @@ export default function ObjectsTab() {
                 {renderObjectProperties(selectedObject.properties)}
               </Box>
 
-              {selectedObject.vector && (
+              {selectedObject.vector && Array.isArray(selectedObject.vector) && selectedObject.vector.length > 0 && (
                 <Box>
                   <Typography variant="subtitle2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                     Vector (first 10 dimensions)
@@ -560,6 +571,17 @@ export default function ObjectsTab() {
                     [{selectedObject.vector.slice(0, 10).map(v => v.toFixed(4)).join(', ')}
                     {selectedObject.vector.length > 10 && `, ... (${selectedObject.vector.length} total)`}]
                   </Typography>
+                </Box>
+              )}
+
+              {selectedObject.metadata && (
+                <Box>
+                  <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                    Metadata
+                  </Typography>
+                  {renderObjectProperties(Object.fromEntries(
+                    Object.entries(selectedObject.metadata).filter(([_, v]) => v !== null)
+                  ))}
                 </Box>
               )}
             </Stack>

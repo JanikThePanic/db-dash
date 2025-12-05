@@ -1,20 +1,23 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import Optional
-from app.services.WeaviateClient import weaviate_client as wc
+
+import app.services.objectsHelper as oh
 
 router = APIRouter(tags=["objects"])
 
-# @router.get("/collections/{name}/objects")
-# def list_objects(
-#     name: str,
-#     limit: int = 50,
-#     cursor: Optional[str] = None,
-#     where: Optional[str] = None,
-#     fields: Optional[str] = None,
-#     include_vector: bool = False,
-# ):
-#     """ List objects in a specific collection with optional filtering and pagination. """
-#     return wc.list_objects(name, limit=limit, cursor=cursor, where=where, fields=fields, include_vector=include_vector)
+@router.get("/collections/{name}/objects")
+def list_objects(
+    name: str,
+    limit: int = 50,
+):
+    """ List objects in a specific collection with optional filtering and pagination. """
+    objs = oh.list_objects(
+        name=name,
+        limit=limit
+    )
+    if objs is None:
+        raise HTTPException(status_code=404, detail="collection not found")
+    return objs
 
 # @router.get("/collections/{name}/objects/{id}")
 # def get_object(name: str, id: str, include_vector: bool = False):

@@ -58,11 +58,25 @@ export interface CollectionResponse {
   collection: Collection;
 }
 
+export interface WeaviateObjectMetadata {
+  creation_time: string | null;
+  last_update_time: string | null;
+  distance: number | null;
+  certainty: number | null;
+  score: number | null;
+  explain_score: string | null;
+  is_consistent: boolean | null;
+  rerank_score: number | null;
+}
+
 export interface WeaviateObject {
-  id: string;
+  uuid: string;
+  id?: string; // For backwards compatibility
   properties: Record<string, any>;
-  vector?: number[];
+  vector?: number[] | Record<string, any>;
   collection?: string;
+  metadata?: WeaviateObjectMetadata;
+  references?: any;
 }
 
 export interface ObjectsResponse {
@@ -78,11 +92,13 @@ export interface MetaResponse {
 }
 
 export interface SearchResult {
-  id: string;
+  uuid: string;
+  id?: string; // For backwards compatibility
   properties: Record<string, any>;
   score?: number;
   distance?: number;
   collection?: string;
+  metadata?: WeaviateObjectMetadata;
 }
 
 export interface ProjectionPoint {
