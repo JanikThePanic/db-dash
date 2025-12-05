@@ -12,7 +12,7 @@ def list_collections() -> list:
 
 def collection_exists(name: str) -> dict | None:
     """ Check if a collection exists in Weaviate. Return details. """
-    collection = wc.client.collections.list_all().get(name)
+    collection = wc.client.collections.use(name).config.get()
     return collection
 
 def delete_collection(name: str) -> bool:
