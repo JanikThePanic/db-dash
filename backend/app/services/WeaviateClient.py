@@ -39,7 +39,7 @@ class Weaviate:
             
             # Configure with shorter timeout and skip initial checks for faster startup
             additional_config = AdditionalConfig(
-                timeout=Timeout(init=3, query=30, insert=30)
+                timeout=Timeout(init=3, query=5, insert=5, update=5, delete=5)
             )
             
             client = weaviate.connect_to_local(
