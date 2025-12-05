@@ -225,8 +225,8 @@ export default function ObjectsTab() {
             }}
           >
             <Tab label={isMobile ? "📋 Browse" : "📋 Browse Objects"} />
-            <Tab label={isMobile ? "🔍 Search" : "🔍 Text Search"} />
-            <Tab label={isMobile ? "🎯 Near" : "🎯 Near Object Search"} />
+            <Tab label={isMobile ? "🔍 Search" : "🔍 Text Search"} disabled />
+            <Tab label={isMobile ? "🎯 Near" : "🎯 Near Object Search"} disabled />
           </Tabs>
 
           {/* Browse Tab */}
