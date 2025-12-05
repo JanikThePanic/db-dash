@@ -35,14 +35,17 @@ import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import CloseIcon from '@mui/icons-material/Close';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import ViewColumnIcon from '@mui/icons-material/ViewColumn';
+import AddIcon from '@mui/icons-material/Add';
 import {
   listCollections,
   listObjects,
   searchText,
   searchNearObject,
   getObject,
+  getCollection,
 } from '../services/api';
-import type { WeaviateObject, SearchResult } from '../types';
+import type { WeaviateObject, SearchResult, Collection } from '../types';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -78,6 +81,10 @@ export default function ObjectsTab() {
 
   // Browse tab state
   const [limit, setLimit] = useState(50);
+  const [availableProperties, setAvailableProperties] = useState<string[]>([]);
+  const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
+  const [showPropertiesColumn, setShowPropertiesColumn] = useState(true);
+  const [columnDialogOpen, setColumnDialogOpen] = useState(false);
 
   // Search tab state
   const [searchQuery, setSearchQuery] = useState('');
@@ -107,6 +114,25 @@ export default function ObjectsTab() {
       setError(err.message || 'Failed to load collections');
     }
   };
+
+  const loadCollectionSchema = async (collectionName: string) => {
+    try {
+      const response = await getCollection(collectionName);
+      const properties = response.data.collection.properties.map(p => p.name);
+      setAvailableProperties(properties);
+      // Start with only Properties summary column selected
+      setSelectedProperties([]);
+      setShowPropertiesColumn(true);
+    } catch (err: any) {
+      console.error('Failed to load collection schema:', err);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedCollection) {
+      loadCollectionSchema(selectedCollection);
+    }
+  }, [selectedCollection]);
 
   const handleBrowse = async () => {
     if (!selectedCollection) return;
@@ -232,7 +258,7 @@ export default function ObjectsTab() {
           {/* Browse Tab */}
           <TabPanel value={tabValue} index={0}>
             <Grid container spacing={2} alignItems="center">
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={5}>
                 <FormControl fullWidth>
                   <InputLabel>Collection</InputLabel>
                   <Select
@@ -248,7 +274,7 @@ export default function ObjectsTab() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} sm={3}>
+              <Grid item xs={12} sm={2}>
                 <TextField
                   fullWidth
                   type="number"
@@ -258,7 +284,7 @@ export default function ObjectsTab() {
                   inputProps={{ min: 1, max: 5000 }}
                 />
               </Grid>
-              <Grid item xs={12} sm={3}>
+              <Grid item xs={6} sm={3}>
                 <Button
                   fullWidth
                   variant="contained"
@@ -267,6 +293,17 @@ export default function ObjectsTab() {
                   startIcon={loading ? <CircularProgress size={20} /> : <RefreshIcon />}
                 >
                   Load
+                </Button>
+              </Grid>
+              <Grid item xs={6} sm={2}>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  onClick={() => setColumnDialogOpen(true)}
+                  startIcon={<ViewColumnIcon />}
+                  disabled={!selectedCollection}
+                >
+                  Columns
                 </Button>
               </Grid>
             </Grid>
@@ -278,7 +315,14 @@ export default function ObjectsTab() {
                     <TableRow>
                       <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, width: 50 }}>#</TableCell>
                       <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>ID</TableCell>
-                      <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Properties</TableCell>
+                      {selectedProperties.length > 0 && selectedProperties.map(prop => (
+                        <TableCell key={prop} sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                          {prop}
+                        </TableCell>
+                      ))}
+                      {showPropertiesColumn && (
+                        <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Properties</TableCell>
+                      )}
                       <TableCell align="right" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Actions</TableCell>
                     </TableRow>
                   </TableHead>
@@ -295,6 +339,14 @@ export default function ObjectsTab() {
                             {objectId.substring(0, 8)}...
                           </Typography>
                         </TableCell>
+                        {selectedProperties.length > 0 && selectedProperties.map(prop => (
+                          <TableCell key={prop} sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                            {obj.properties[prop] !== undefined 
+                              ? String(obj.properties[prop]) 
+                              : '-'}
+                          </TableCell>
+                        ))}
+                        {showPropertiesColumn && (
                         <TableCell>
                           <Box display="flex" gap={1} flexWrap="wrap">
                             {Object.keys(obj.properties).slice(0, 3).map((key) => (
@@ -305,6 +357,7 @@ export default function ObjectsTab() {
                             )}
                           </Box>
                         </TableCell>
+                        )}
                         <TableCell align="right">
                           <IconButton
                             size="small"
@@ -594,6 +647,88 @@ export default function ObjectsTab() {
               )}
             </Stack>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Column Selector Dialog */}
+      <Dialog
+        open={columnDialogOpen}
+        onClose={() => setColumnDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          Select Property Columns
+          <IconButton
+            aria-label="close"
+            onClick={() => setColumnDialogOpen(false)}
+            sx={{ position: 'absolute', right: 8, top: 8 }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ mt: 1 }}>
+            <Typography variant="body2" color="text.secondary">
+              Choose which properties to display as columns in the table
+            </Typography>
+            
+            {/* Properties Summary Column Toggle */}
+            <Box>
+              <Typography variant="subtitle2" gutterBottom>
+                Summary Column
+              </Typography>
+              <Chip
+                label="Properties (Summary)"
+                onClick={() => setShowPropertiesColumn(!showPropertiesColumn)}
+                color={showPropertiesColumn ? 'primary' : 'default'}
+                variant={showPropertiesColumn ? 'filled' : 'outlined'}
+                sx={{ cursor: 'pointer' }}
+              />
+            </Box>
+
+            {/* Individual Property Columns */}
+            <Box>
+              <Typography variant="subtitle2" gutterBottom>
+                Individual Property Columns
+              </Typography>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                {availableProperties.map(prop => (
+                  <Chip
+                    key={prop}
+                    label={prop}
+                    onClick={() => {
+                      if (selectedProperties.includes(prop)) {
+                        setSelectedProperties(selectedProperties.filter(p => p !== prop));
+                      } else {
+                        setSelectedProperties([...selectedProperties, prop]);
+                      }
+                    }}
+                    color={selectedProperties.includes(prop) ? 'primary' : 'default'}
+                    variant={selectedProperties.includes(prop) ? 'filled' : 'outlined'}
+                    sx={{ cursor: 'pointer' }}
+                  />
+                ))}
+              </Box>
+            </Box>
+
+            <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', mt: 2 }}>
+              <Button
+                variant="outlined"
+                onClick={() => setSelectedProperties([])}
+                size="small"
+              >
+                Clear All
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => setSelectedProperties([...availableProperties])}
+                size="small"
+              >
+                Select All
+              </Button>
+            </Box>
+          </Stack>
         </DialogContent>
       </Dialog>
     </Stack>
