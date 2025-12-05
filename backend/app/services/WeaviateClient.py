@@ -38,15 +38,15 @@ class Weaviate:
             HTTP_PORT = config.database_port
             
             # Configure with shorter timeout and skip initial checks for faster startup
-            additional_config = AdditionalConfig(
-                timeout=Timeout(init=3, query=5, insert=5, update=5, delete=5)
-            )
+            # additional_config = AdditionalConfig(
+            #     timeout=Timeout(init=3, query=5, insert=5, update=5, delete=5)
+            # )
             
             client = weaviate.connect_to_local(
                 host=HTTP_HOST,
                 port=HTTP_PORT,
-                additional_config=additional_config,
-                skip_init_checks=True
+                # additional_config=additional_config,
+                # skip_init_checks=True
             )
             self.client = client
         except Exception as e:
