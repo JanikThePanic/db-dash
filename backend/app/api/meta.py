@@ -1,13 +1,13 @@
 from fastapi import APIRouter
 
-from app.services.weaviate_client import weaviate_client as wc
+from app.services.WeaviateClient import weaviate_client as wc
 
 router = APIRouter(tags=["meta"])
 
 @router.get("/meta")
 def meta():
     meta_data = wc.get_meta()
-    if "hostname" in meta_data and "[::]:" in str(meta_data["hostname"]):
+    if meta_data and "hostname" in meta_data and "[::]:" in str(meta_data["hostname"]):
         meta_data["hostname"] = meta_data["hostname"].replace("[::]:", "localhost:")
     return meta_data
 

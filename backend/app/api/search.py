@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from typing import Optional, List, Dict, Any
 from pydantic import BaseModel
-from app.services import weaviate_client as wc
+from app.services.WeaviateClient import weaviate_client as wc
 
 router = APIRouter(tags=["search"])
 
