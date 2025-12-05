@@ -37,6 +37,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 import AddIcon from '@mui/icons-material/Add';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import {
   listCollections,
   listObjects,
@@ -85,6 +88,8 @@ export default function ObjectsTab() {
   const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
   const [showPropertiesColumn, setShowPropertiesColumn] = useState(true);
   const [columnDialogOpen, setColumnDialogOpen] = useState(false);
+  const [sortColumn, setSortColumn] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
   // Search tab state
   const [searchQuery, setSearchQuery] = useState('');
@@ -187,6 +192,48 @@ export default function ObjectsTab() {
   const handleViewDetails = (obj: WeaviateObject | SearchResult) => {
     setSelectedObject(obj as WeaviateObject);
     setDetailsOpen(true);
+  };
+
+  const handleSort = (column: string) => {
+    if (sortColumn === column) {
+      // Toggle direction if same column
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      // New column, default to ascending
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
+  };
+
+  const getSortedObjects = () => {
+    if (!sortColumn) return objects;
+
+    return [...objects].sort((a, b) => {
+      let aValue: any;
+      let bValue: any;
+
+      if (sortColumn === 'id') {
+        aValue = getObjectId(a);
+        bValue = getObjectId(b);
+      } else {
+        aValue = a.properties[sortColumn];
+        bValue = b.properties[sortColumn];
+      }
+
+      // Handle null/undefined values
+      if (aValue === undefined || aValue === null) return 1;
+      if (bValue === undefined || bValue === null) return -1;
+
+      // Convert to string for comparison if needed
+      const aStr = String(aValue).toLowerCase();
+      const bStr = String(bValue).toLowerCase();
+
+      if (sortDirection === 'asc') {
+        return aStr < bStr ? -1 : aStr > bStr ? 1 : 0;
+      } else {
+        return aStr > bStr ? -1 : aStr < bStr ? 1 : 0;
+      }
+    });
   };
 
   const renderObjectProperties = (properties: Record<string, any>) => {
@@ -314,10 +361,41 @@ export default function ObjectsTab() {
                   <TableHead>
                     <TableRow>
                       <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, width: 50 }}>#</TableCell>
-                      <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>ID</TableCell>
+                      <TableCell 
+                        sx={{ 
+                          fontSize: { xs: '0.75rem', sm: '0.875rem' }, 
+                          cursor: 'pointer',
+                          '&:hover': { backgroundColor: 'action.hover' }
+                        }} 
+                        onClick={() => handleSort('id')}
+                      >
+                        <Box display="flex" alignItems="center" gap={0.5}>
+                          ID
+                          {sortColumn === 'id' ? (
+                            sortDirection === 'asc' ? <ArrowUpwardIcon fontSize="small" /> : <ArrowDownwardIcon fontSize="small" />
+                          ) : (
+                            <UnfoldMoreIcon fontSize="small" sx={{ opacity: 0.3 }} />
+                          )}
+                        </Box>
+                      </TableCell>
                       {selectedProperties.length > 0 && selectedProperties.map(prop => (
-                        <TableCell key={prop} sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
-                          {prop}
+                        <TableCell 
+                          key={prop} 
+                          sx={{ 
+                            fontSize: { xs: '0.75rem', sm: '0.875rem' }, 
+                            cursor: 'pointer',
+                            '&:hover': { backgroundColor: 'action.hover' }
+                          }}
+                          onClick={() => handleSort(prop)}
+                        >
+                          <Box display="flex" alignItems="center" gap={0.5}>
+                            {prop}
+                            {sortColumn === prop ? (
+                              sortDirection === 'asc' ? <ArrowUpwardIcon fontSize="small" /> : <ArrowDownwardIcon fontSize="small" />
+                            ) : (
+                              <UnfoldMoreIcon fontSize="small" sx={{ opacity: 0.3 }} />
+                            )}
+                          </Box>
                         </TableCell>
                       ))}
                       {showPropertiesColumn && (
@@ -327,7 +405,7 @@ export default function ObjectsTab() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {objects.map((obj, index) => {
+                    {getSortedObjects().map((obj, index) => {
                       const objectId = getObjectId(obj);
                       return (
                       <TableRow key={objectId}>
