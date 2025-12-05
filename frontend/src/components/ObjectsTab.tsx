@@ -158,14 +158,9 @@ export default function ObjectsTab() {
     }
   };
 
-  const handleViewDetails = async (collectionName: string, id: string) => {
-    try {
-      const response = await getObject(collectionName, id, true);
-      setSelectedObject(response.data);
-      setDetailsOpen(true);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load object details');
-    }
+  const handleViewDetails = (obj: WeaviateObject | SearchResult) => {
+    setSelectedObject(obj as WeaviateObject);
+    setDetailsOpen(true);
   };
 
   const renderObjectProperties = (properties: Record<string, any>) => {
@@ -308,7 +303,7 @@ export default function ObjectsTab() {
                         <TableCell align="right">
                           <IconButton
                             size="small"
-                            onClick={() => handleViewDetails(selectedCollection, objectId)}
+                            onClick={() => handleViewDetails(obj)}
                           >
                             <VisibilityIcon />
                           </IconButton>
@@ -399,7 +394,7 @@ export default function ObjectsTab() {
                         <TableCell align="right">
                           <IconButton
                             size="small"
-                            onClick={() => handleViewDetails(result.collection || '', resultId)}
+                            onClick={() => handleViewDetails(result)}
                           >
                             <VisibilityIcon />
                           </IconButton>
@@ -495,7 +490,7 @@ export default function ObjectsTab() {
                         <TableCell align="right">
                           <IconButton
                             size="small"
-                            onClick={() => handleViewDetails(nearObjectCollection, resultId)}
+                            onClick={() => handleViewDetails(result)}
                           >
                             <VisibilityIcon />
                           </IconButton>
