@@ -37,20 +37,21 @@ class Weaviate:
             HTTP_HOST = config.database_url
             HTTP_PORT = config.database_port
             
-            # Configure with shorter timeout and skip initial checks for faster startup
-            # additional_config = AdditionalConfig(
-            #     timeout=Timeout(init=3, query=5, insert=5, update=5, delete=5)
-            # )
+            # Configure with shorter timeout
+            additional_config = AdditionalConfig(
+                timeout=Timeout(init=3, query=5, insert=5, update=5, delete=5)
+            )
             
             client = weaviate.connect_to_local(
                 host=HTTP_HOST,
                 port=HTTP_PORT,
-                # additional_config=additional_config,
+                additional_config=additional_config,
                 # skip_init_checks=True
             )
             self.client = client
         except Exception as e:
             print(f"Warning: Could not connect to Weaviate: {e}")
+            self._connection_attempted = False
             self.client = None
 
     def get_meta(self):
