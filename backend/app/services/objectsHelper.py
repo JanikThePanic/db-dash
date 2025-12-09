@@ -6,6 +6,8 @@ Helper functions for managing collections in Weaviate.
 from app.services.WeaviateClient import weaviate_client as wc
 from app.services.collectionsHelper import collection_exists
 
+from weaviate.classes.query import Sort
+
 def list_objects(
     name: str,
     limit: int = 50
@@ -14,5 +16,6 @@ def list_objects(
     collection = wc.client.collections.use(name)
     if collection is None:
         return None
-    objs = collection.query.fetch_objects(limit=limit)
+    objs = collection.query.fetch_objects(limit=limit, 
+        sort=Sort.by_property(name="_creationTimeUnix", ascending=False))
     return objs
