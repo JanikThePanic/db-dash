@@ -137,10 +137,9 @@ export default function DockerNetworkMenu({ open, onClose, onSave }: DockerNetwo
             </Alert>
           )}
           
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            Configure the Docker network settings for your Weaviate instance. 
-            Select the network bridge to use for container communication.
-          </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            Select the Docker network that the Weaviate database container is connected to.
+            </Typography>
 
           {loading && !error && !success ? (
             <Box display="flex" justifyContent="center" py={3}>
