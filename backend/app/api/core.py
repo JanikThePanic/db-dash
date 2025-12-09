@@ -42,3 +42,25 @@ def delete_key(name: str):
     """ Delete a key from the system by name. """
     config.remove_api_key(name)
     return {"message": f"Key {name} deleted successfully"}
+
+@router.get("/docker/networks")
+def list_docker_networks():
+    """ List available Docker networks. """
+    return {"networks": ["bridge", "host", "none"]}  # Placeholder for actual Docker network listing
+
+@router.get("/docker/network")
+def get_docker_network():
+    """ Get the current Docker network setting. """
+    return {"network": config.docker_network}
+
+@router.post("/docker/network")
+def set_docker_network(network: str):
+    """ Set the Docker network setting. """
+    config.docker_network = network
+    return {"message": "Docker network set successfully"}
+
+@router.delete("/docker/network")
+def clear_docker_network():
+    """ Clear the Docker network setting. """
+    config.docker_network = ""
+    return {"message": "Docker network cleared successfully"}

@@ -99,4 +99,10 @@ export const setDatabaseUrl = (url: string) => api.post('/database/url', null, {
 export const getDatabasePort = () => api.get<{ port: number }>('/database/port');
 export const setDatabasePort = (port: number) => api.post('/database/port', null, { params: { port } });
 
+// Docker
+export const listDockerNetworks = () => api.get<{ networks: string[] }>('/docker/networks');
+export const getDockerNetwork = () => api.get<{ network: string }>('/docker/network');
+export const setDockerNetwork = (network: string) => api.post('/docker/network', null, { params: { network } });
+export const clearDockerNetwork = () => api.delete<{ message: string }>('/docker/network');
+
 export default api;

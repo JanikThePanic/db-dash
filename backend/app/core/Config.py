@@ -7,6 +7,7 @@ class Config:
         self._database_url = "localhost"
         self._database_port = 3131
         self._api_keys = {}
+        self._docker_network = ""
 
     @property
     def database_url(self) -> str:
@@ -34,6 +35,15 @@ class Config:
     def remove_api_key(self, name: str):
         if name in self._api_keys:
             del self._api_keys[name]
+
+    
+    @property
+    def docker_network(self) -> str:
+        return self._docker_network
+    
+    @docker_network.setter
+    def docker_network(self, network: str):
+        self._docker_network = network
 
 # Singleton instance
 config = Config()
