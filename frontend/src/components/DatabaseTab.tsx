@@ -15,9 +15,11 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import SettingsIcon from '@mui/icons-material/Settings';
+import HubIcon from '@mui/icons-material/Hub';
 import { healthCheck, getMeta, ping } from '../services/api';
 import type { MetaResponse } from '../types';
 import ConfigureMenu from './ConfigureMenu';
+import DockerNetworkMenu from './DockerNetworkMenu';
 
 export default function DatabaseTab() {
   const [loading, setLoading] = useState(true);
@@ -26,6 +28,7 @@ export default function DatabaseTab() {
   const [pingStatus, setPingStatus] = useState<{ weaviate: boolean } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [configDialogOpen, setConfigDialogOpen] = useState(false);
+  const [dockerNetworkDialogOpen, setDockerNetworkDialogOpen] = useState(false);
 
   const loadData = async () => {
     setLoading(true);
@@ -52,6 +55,19 @@ export default function DatabaseTab() {
 
   const handleCloseConfigDialog = () => {
     setConfigDialogOpen(false);
+  };
+
+  const handleOpenDockerNetworkDialog = () => {
+    setDockerNetworkDialogOpen(true);
+  };
+
+  const handleCloseDockerNetworkDialog = () => {
+    setDockerNetworkDialogOpen(false);
+  };
+
+  const handleDockerNetworkSave = (network: string) => {
+    console.log('Selected network:', network);
+    // TODO: Implement network configuration logic
   };
 
   useEffect(() => {
@@ -98,12 +114,20 @@ export default function DatabaseTab() {
             Monitor your database health and status
           </Typography>
         </Box>
-        <Box display="flex" gap={2} sx={{ width: { xs: '100%', sm: 'auto' } }}>
+        <Box display="flex" gap={1.2} flexWrap="wrap" sx={{ width: { xs: '100%', sm: 'auto' } }}>
+          <Button 
+            startIcon={<HubIcon />} 
+            variant="outlined" 
+            onClick={handleOpenDockerNetworkDialog}
+            sx={{ borderRadius: 3, px: 3, width: { xs: '100%', sm: 'auto' } }}
+          >
+            Docker Network
+          </Button>
           <Button 
             startIcon={<SettingsIcon />} 
             variant="outlined" 
             onClick={handleOpenConfigDialog}
-            sx={{ borderRadius: 3, px: 3, width: { xs: '50%', sm: 'auto' } }}
+            sx={{ borderRadius: 3, px: 3, width: { xs: '100%', sm: 'auto' } }}
           >
             Configure Database
           </Button>
@@ -111,7 +135,7 @@ export default function DatabaseTab() {
             startIcon={<RefreshIcon />} 
             variant="contained" 
             onClick={loadData}
-            sx={{ borderRadius: 3, px: 3, width: { xs: '50%', sm: 'auto' } }}
+            sx={{ borderRadius: 3, px: 3, width: { xs: '100%', sm: 'auto' } }}
           >
             Refresh
           </Button>
@@ -272,6 +296,13 @@ export default function DatabaseTab() {
         open={configDialogOpen}
         onClose={handleCloseConfigDialog}
         onConfigSaved={loadData}
+      />
+
+      {/* Docker Network Dialog */}
+      <DockerNetworkMenu 
+        open={dockerNetworkDialogOpen}
+        onClose={handleCloseDockerNetworkDialog}
+        onSave={handleDockerNetworkSave}
       />
     </Stack>
   );
