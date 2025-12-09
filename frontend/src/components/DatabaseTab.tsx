@@ -9,12 +9,18 @@ import {
   Alert,
   Button,
   Stack,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
 } from '@mui/material';
 import Grid from '@mui/material/GridLegacy';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import { healthCheck, getMeta, ping } from '../services/api';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { healthCheck, getMeta, ping, getDatabaseUrl, getDatabasePort, setDatabaseUrl, setDatabasePort } from '../services/api';
 import type { MetaResponse } from '../types';
 
 export default function DatabaseTab() {
@@ -23,6 +29,11 @@ export default function DatabaseTab() {
   const [meta, setMeta] = useState<MetaResponse | null>(null);
   const [pingStatus, setPingStatus] = useState<{ weaviate: boolean } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [configDialogOpen, setConfigDialogOpen] = useState(false);
+  const [dbUrl, setDbUrl] = useState('localhost');
+  const [dbPort, setDbPort] = useState('3131');
+  const [configError, setConfigError] = useState<string | null>(null);
+  const [configSuccess, setConfigSuccess] = useState<string | null>(null);
 
   const loadData = async () => {
     setLoading(true);
@@ -40,6 +51,58 @@ export default function DatabaseTab() {
       setError(err.message || 'Failed to connect to backend');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadDatabaseConfig = async () => {
+    try {
+      const [urlRes, portRes] = await Promise.all([
+        getDatabaseUrl(),
+        getDatabasePort(),
+      ]);
+      setDbUrl(urlRes.data.url);
+      setDbPort(String(portRes.data.port));
+    } catch (err: any) {
+      console.error('Failed to load database config:', err);
+    }
+  };
+
+  const handleOpenConfigDialog = async () => {
+    await loadDatabaseConfig();
+    setConfigDialogOpen(true);
+    setConfigError(null);
+    setConfigSuccess(null);
+  };
+
+  const handleCloseConfigDialog = () => {
+    setConfigDialogOpen(false);
+    setConfigError(null);
+    setConfigSuccess(null);
+  };
+
+  const handleSaveConfig = async () => {
+    setConfigError(null);
+    setConfigSuccess(null);
+    
+    try {
+      const portNum = parseInt(dbPort, 10);
+      if (isNaN(portNum) || portNum < 1 || portNum > 65535) {
+        setConfigError('Port must be a valid number between 1 and 65535');
+        return;
+      }
+
+      await Promise.all([
+        setDatabaseUrl(dbUrl),
+        setDatabasePort(portNum),
+      ]);
+
+      setConfigSuccess('Database configuration updated successfully!');
+      setTimeout(() => {
+        handleCloseConfigDialog();
+        loadData(); // Refresh the connection status
+      }, 1500);
+    } catch (err: any) {
+      setConfigError(err.message || 'Failed to update database configuration');
     }
   };
 
@@ -87,14 +150,24 @@ export default function DatabaseTab() {
             Monitor your database health and status
           </Typography>
         </Box>
-        <Button 
-          startIcon={<RefreshIcon />} 
-          variant="contained" 
-          onClick={loadData}
-          sx={{ borderRadius: 3, px: 3, width: { xs: '100%', sm: 'auto' } }}
-        >
-          Refresh
-        </Button>
+        <Box display="flex" gap={2} sx={{ width: { xs: '100%', sm: 'auto' } }}>
+          <Button 
+            startIcon={<SettingsIcon />} 
+            variant="outlined" 
+            onClick={handleOpenConfigDialog}
+            sx={{ borderRadius: 3, px: 3, width: { xs: '50%', sm: 'auto' } }}
+          >
+            Configure
+          </Button>
+          <Button 
+            startIcon={<RefreshIcon />} 
+            variant="contained" 
+            onClick={loadData}
+            sx={{ borderRadius: 3, px: 3, width: { xs: '50%', sm: 'auto' } }}
+          >
+            Refresh
+          </Button>
+        </Box>
       </Box>
 
       <Box sx={{ width: '100%', overflow: 'hidden' }}>
@@ -245,6 +318,65 @@ export default function DatabaseTab() {
         </Grid>
       </Grid>
       </Box>
+
+      {/* Configuration Dialog */}
+      <Dialog 
+        open={configDialogOpen} 
+        onClose={handleCloseConfigDialog}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          <Box display="flex" alignItems="center" gap={1}>
+            <SettingsIcon />
+            <Typography variant="h6">Database Configuration</Typography>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          <Stack spacing={3} sx={{ mt: 2 }}>
+            {configError && (
+              <Alert severity="error" onClose={() => setConfigError(null)}>
+                {configError}
+              </Alert>
+            )}
+            {configSuccess && (
+              <Alert severity="success" onClose={() => setConfigSuccess(null)}>
+                {configSuccess}
+              </Alert>
+            )}
+            <TextField
+              label="Database URL"
+              value={dbUrl}
+              onChange={(e) => setDbUrl(e.target.value)}
+              fullWidth
+              placeholder="localhost"
+              helperText="Enter the hostname or IP address of your Weaviate instance"
+            />
+            <TextField
+              label="Database Port"
+              value={dbPort}
+              onChange={(e) => setDbPort(e.target.value)}
+              fullWidth
+              type="number"
+              placeholder="3131"
+              helperText="Enter the port number (1-65535)"
+              inputProps={{ min: 1, max: 65535 }}
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={handleCloseConfigDialog} color="inherit">
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleSaveConfig} 
+            variant="contained" 
+            disabled={!dbUrl || !dbPort}
+          >
+            Save Configuration
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Stack>
   );
 }

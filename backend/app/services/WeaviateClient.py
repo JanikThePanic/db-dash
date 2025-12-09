@@ -14,15 +14,45 @@ class Weaviate:
         """
         self.client: weaviate.WeaviateClient | None = None
         self._connection_attempted = False
+        self._current_host = None
+        self._current_port = None
         self.connect_weaviate()
 
     def get_client(self):
         """
         Get or create the Weaviate client connection (lazy initialization).
+        Automatically reconnects if configuration has changed.
         """
+        # Check if configuration has changed
+        if (self._current_host != config.database_url or 
+            self._current_port != config.database_port):
+            self.reconnect()
+        
         if not self._connection_attempted:
             self.connect_weaviate()
         return self.client
+
+    def disconnect(self):
+        """
+        Disconnect from the current Weaviate instance.
+        """
+        if self.client:
+            try:
+                self.client.close()
+            except Exception as e:
+                print(f"Warning: Error closing Weaviate client: {e}")
+            finally:
+                self.client = None
+                self._connection_attempted = False
+                self._current_host = None
+                self._current_port = None
+
+    def reconnect(self):
+        """
+        Reconnect to Weaviate with new configuration settings.
+        """
+        self.disconnect()
+        self.connect_weaviate()
 
     def connect_weaviate(self):
         """
@@ -49,10 +79,14 @@ class Weaviate:
                 # skip_init_checks=True
             )
             self.client = client
+            self._current_host = HTTP_HOST
+            self._current_port = HTTP_PORT
         except Exception as e:
             print(f"Warning: Could not connect to Weaviate: {e}")
             self._connection_attempted = False
             self.client = None
+            self._current_host = None
+            self._current_port = None
 
     def get_meta(self):
         """
