@@ -92,7 +92,7 @@ export default function ConfigureMenu({ open, onClose, onConfigSaved }: Configur
       <DialogTitle>
         <Box display="flex" alignItems="center" gap={1}>
           <SettingsIcon />
-          <Typography variant="h6">Database Configuration</Typography>
+          <Typography variant="h6">Configure Database</Typography>
         </Box>
       </DialogTitle>
       <DialogContent>

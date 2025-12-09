@@ -105,7 +105,7 @@ export default function DatabaseTab() {
             onClick={handleOpenConfigDialog}
             sx={{ borderRadius: 3, px: 3, width: { xs: '50%', sm: 'auto' } }}
           >
-            Configure
+            Configure Database
           </Button>
           <Button 
             startIcon={<RefreshIcon />} 
