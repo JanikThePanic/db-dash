@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -26,24 +26,26 @@ export default function ConfigureMenu({ open, onClose, onConfigSaved }: Configur
   const [configError, setConfigError] = useState<string | null>(null);
   const [configSuccess, setConfigSuccess] = useState<string | null>(null);
 
-  const loadDatabaseConfig = async () => {
-    try {
-      const [urlRes, portRes] = await Promise.all([
-        getDatabaseUrl(),
-        getDatabasePort(),
-      ]);
-      setDbUrl(urlRes.data.url);
-      setDbPort(String(portRes.data.port));
-    } catch (err: any) {
-      console.error('Failed to load database config:', err);
+  // Load database config when dialog opens
+  useEffect(() => {
+    if (open) {
+      const loadDatabaseConfig = async () => {
+        try {
+          const [urlRes, portRes] = await Promise.all([
+            getDatabaseUrl(),
+            getDatabasePort(),
+          ]);
+          setDbUrl(urlRes.data.url);
+          setDbPort(String(portRes.data.port));
+          setConfigError(null);
+          setConfigSuccess(null);
+        } catch (err: any) {
+          console.error('Failed to load database config:', err);
+        }
+      };
+      loadDatabaseConfig();
     }
-  };
-
-  const handleOpen = async () => {
-    await loadDatabaseConfig();
-    setConfigError(null);
-    setConfigSuccess(null);
-  };
+  }, [open]);
 
   const handleClose = () => {
     onClose();
@@ -76,11 +78,6 @@ export default function ConfigureMenu({ open, onClose, onConfigSaved }: Configur
       setConfigError(err.message || 'Failed to update database configuration');
     }
   };
-
-  // Load config when dialog opens
-  if (open && !configError && !configSuccess) {
-    handleOpen();
-  }
 
   return (
     <Dialog 
