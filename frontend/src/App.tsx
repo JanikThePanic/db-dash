@@ -18,9 +18,11 @@ import {
   ListItemText,
   useMediaQuery,
   useTheme,
+  Tooltip,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
+import InfoIcon from '@mui/icons-material/Info';
 import DatabaseIcon from '@mui/icons-material/Storage';
 import CollectionsIcon from '@mui/icons-material/FolderOpen';
 import ObjectsIcon from '@mui/icons-material/DataObject';
@@ -260,6 +262,24 @@ function App() {
                 <Tab icon={<View3DIcon />} label="3D View" iconPosition="start" />
               </Tabs>
             )}
+            <Tooltip title="View GitHub Repository" arrow>
+              <IconButton
+                color="inherit"
+                aria-label="GitHub repository"
+                component="a"
+                href="https://github.com/JanikThePanic/db-dash"
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{ 
+                  ml: 'auto',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  }
+                }}
+              >
+                <InfoIcon />
+              </IconButton>
+            </Tooltip>
           </Box>
         </AppBar>
 
