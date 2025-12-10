@@ -105,4 +105,9 @@ export const getDockerNetwork = () => api.get<{ network: string }>('/docker/netw
 export const setDockerNetwork = (network: string) => api.post('/docker/network', null, { params: { network } });
 export const clearDockerNetwork = () => api.delete<{ message: string }>('/docker/network');
 
+// Keys
+export const listKeys = () => api.get<{ keys: string[] }>('/keys');
+export const addKey = (name: string, value: string) => api.post('/key', null, { params: { name, value } });
+export const deleteKey = (name: string) => api.delete<{ message: string }>('/key', { params: { name } });
+
 export default api;

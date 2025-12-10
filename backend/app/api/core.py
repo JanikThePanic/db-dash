@@ -26,7 +26,7 @@ def set_database_port(port: int):
     config.database_port = port
     return {"message": "Database port set successfully"}
 
-@router.get("/key")
+@router.get("/keys")
 def list_keys_stored():
     """ List all keys stored in the system. """
     return {"keys": list(config.api_keys.keys())}
@@ -34,8 +34,9 @@ def list_keys_stored():
 @router.post("/key")
 def add_key(name: str, value: str):
     """ Add a new key to the system. """
-    config.add_api_key(name, value)
-    return {"message": f"Key {name} added successfully"}
+    if config.add_api_key(name, value):
+        return {"message": f"Key {name} added successfully"}
+    return {"message": f"Key {name} overwritten successfully"}
 
 @router.delete("/key")
 def delete_key(name: str):

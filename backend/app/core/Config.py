@@ -29,8 +29,12 @@ class Config:
     def api_keys(self) -> dict:
         return self._api_keys
     
-    def add_api_key(self, name: str, value: str):
+    def add_api_key(self, name: str, value: str) -> bool:
+        if name not in self._api_keys:
+            self._api_keys[name] = value
+            return True
         self._api_keys[name] = value
+        return False
         
     def remove_api_key(self, name: str):
         if name in self._api_keys:

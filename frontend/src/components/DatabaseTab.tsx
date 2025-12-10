@@ -16,10 +16,12 @@ import ErrorIcon from '@mui/icons-material/Error';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HubIcon from '@mui/icons-material/Hub';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import { healthCheck, getMeta, ping } from '../services/api';
 import type { MetaResponse } from '../types';
 import ConfigureMenu from './ConfigureMenu';
 import DockerNetworkMenu from './DockerNetworkMenu';
+import KeysMenu from './KeysMenu';
 
 export default function DatabaseTab() {
   const [loading, setLoading] = useState(true);
@@ -29,6 +31,7 @@ export default function DatabaseTab() {
   const [error, setError] = useState<string | null>(null);
   const [configDialogOpen, setConfigDialogOpen] = useState(false);
   const [dockerNetworkDialogOpen, setDockerNetworkDialogOpen] = useState(false);
+  const [keysDialogOpen, setKeysDialogOpen] = useState(false);
 
   const loadData = async () => {
     setLoading(true);
@@ -63,6 +66,14 @@ export default function DatabaseTab() {
 
   const handleCloseDockerNetworkDialog = () => {
     setDockerNetworkDialogOpen(false);
+  };
+
+  const handleOpenKeysDialog = () => {
+    setKeysDialogOpen(true);
+  };
+
+  const handleCloseKeysDialog = () => {
+    setKeysDialogOpen(false);
   };
 
   const handleDockerNetworkSave = (network: string) => {
@@ -115,6 +126,14 @@ export default function DatabaseTab() {
           </Typography>
         </Box>
         <Box display="flex" gap={1.2} flexWrap="wrap" sx={{ width: { xs: '100%', sm: 'auto' } }}>
+          <Button 
+            startIcon={<VpnKeyIcon />} 
+            variant="outlined" 
+            onClick={handleOpenKeysDialog}
+            sx={{ borderRadius: 3, px: 3, width: { xs: '100%', sm: 'auto' } }}
+          >
+            Keys
+          </Button>
           <Button 
             startIcon={<HubIcon />} 
             variant="outlined" 
@@ -303,6 +322,12 @@ export default function DatabaseTab() {
         open={dockerNetworkDialogOpen}
         onClose={handleCloseDockerNetworkDialog}
         onSave={handleDockerNetworkSave}
+      />
+
+      {/* Keys Dialog */}
+      <KeysMenu 
+        open={keysDialogOpen}
+        onClose={handleCloseKeysDialog}
       />
     </Stack>
   );
