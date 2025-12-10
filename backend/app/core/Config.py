@@ -39,7 +39,6 @@ class Config:
     def remove_api_key(self, name: str):
         if name in self._api_keys:
             del self._api_keys[name]
-
     
     @property
     def docker_network(self) -> str:
