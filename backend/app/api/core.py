@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from app.core.Config import config
+import app.services.dockerService as dockerService
 
 router = APIRouter(tags=["core"])
 
@@ -47,7 +48,7 @@ def delete_key(name: str):
 @router.get("/docker/networks")
 def list_docker_networks():
     """ List available Docker networks. """
-    return {"networks": ["bridge", "host", "none"]}  # Placeholder for actual Docker network listing
+    return {"networks": dockerService.list_docker_networks()}
 
 @router.get("/docker/network")
 def get_docker_network():
@@ -58,7 +59,10 @@ def get_docker_network():
 def set_docker_network(network: str):
     """ Set the Docker network setting. """
     config.docker_network = network
-    return {"message": "Docker network set successfully"}
+    if dockerService.connect_to_network(network):
+        return {"message": "Docker network set successfully"}
+    else:
+        return {"message": "Failed to set Docker network: Network not found"}
 
 @router.delete("/docker/network")
 def clear_docker_network():
