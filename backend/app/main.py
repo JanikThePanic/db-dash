@@ -11,7 +11,7 @@ from app.api.meta import router as meta_router
 
 from app.services.WeaviateClient import weaviate_client
 
-app = FastAPI(title="db-dash backend")
+app = FastAPI(title="db-dash backend", port=8000)
 
 app.add_middleware(
     CORSMiddleware,

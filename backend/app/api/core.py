@@ -59,10 +59,8 @@ def get_docker_network():
 def set_docker_network(network: str):
     """ Set the Docker network setting. """
     config.docker_network = network
-    if dockerService.connect_to_network(network):
-        return {"message": "Docker network set successfully"}
-    else:
-        return {"message": "Failed to set Docker network: Network not found"}
+    dockerService.connect_to_network(network)
+    return {"message": "Docker network set successfully"}
 
 @router.delete("/docker/network")
 def clear_docker_network():
