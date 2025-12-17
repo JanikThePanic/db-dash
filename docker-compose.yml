@@ -1,0 +1,30 @@
+
+---
+name: db-dash
+services:
+
+  backend:
+    container_name: db-dash-backend
+    image: ghcr.io/janikthepanic/db-dash-backend:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8000/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  frontend:
+    container_name: db-dash-frontend
+    image: ghcr.io/janikthepanic/db-dash-frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: dockerfile
+    ports:
+    - 5173:80
+    # depends_on:
+    #   backend:
+    #     condition: service_healthy
+...
