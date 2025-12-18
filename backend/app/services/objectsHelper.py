@@ -4,7 +4,6 @@ Helper functions for managing collections in Weaviate.
 """
 
 from app.services.WeaviateClient import weaviate_client as wc
-from app.services.collectionsHelper import collection_exists
 
 from weaviate.classes.query import Sort
 
