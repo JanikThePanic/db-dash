@@ -103,13 +103,14 @@ export interface SearchResult {
 
 export interface ProjectionPoint {
   id: string;
-  coords: number[];
-  properties?: Record<string, any>;
+  x: number;
+  y: number;
+  z?: number | null;
+  properties: Record<string, any>;
 }
 
 export interface ProjectionResponse {
-  collection: string;
-  points: ProjectionPoint[];
   dims: number;
   count: number;
+  points: ProjectionPoint[];
 }

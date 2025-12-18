@@ -33,7 +33,9 @@ function PointCloud({ points, selectedPoint, onPointClick }: PointCloudProps) {
 
   // Create geometry from points
   const geometry = new THREE.BufferGeometry();
-  const positions = new Float32Array(points.flatMap((p) => p.coords));
+  const positions = new Float32Array(
+    points.flatMap((p) => [p.x, p.y, p.z ?? 0])
+  );
   const colors = new Float32Array(
     points.flatMap((p, i) => {
       if (selectedPoint && p.id === selectedPoint.id) {
@@ -137,7 +139,11 @@ export default function ThreeDViewTab() {
       const response = await getProjection(selectedCollection, limit, dims, propsArray);
       setPoints(response.data.points || []);
     } catch (err: any) {
-      setError(err.message || 'Failed to project vectors');
+      if (err.response?.status === 404) {
+        setError('No vectors found in this collection. Make sure objects have vector embeddings.');
+      } else {
+        setError(err.message || 'Failed to project vectors');
+      }
       setPoints([]);
     } finally {
       setLoading(false);
@@ -286,7 +292,7 @@ export default function ThreeDViewTab() {
                         Coordinates
                       </Typography>
                       <Typography variant="body2">
-                        [{selectedPoint.coords.map((c) => c.toFixed(3)).join(', ')}]
+                        [{selectedPoint.x.toFixed(3)}, {selectedPoint.y.toFixed(3)}{selectedPoint.z !== null && selectedPoint.z !== undefined ? `, ${selectedPoint.z.toFixed(3)}` : ''}]
                       </Typography>
                     </Box>
 
