@@ -61,8 +61,6 @@ class Weaviate:
         if self._connection_attempted:
             return
         
-        self._connection_attempted = True
-        
         try:
             HTTP_HOST = config.database_url
             HTTP_PORT = config.database_port
@@ -85,9 +83,9 @@ class Weaviate:
             self.client = client
             self._current_host = HTTP_HOST
             self._current_port = HTTP_PORT
+            self._connection_attempted = True
         except Exception as e:
             print(f"Warning: Could not connect to Weaviate: {e}")
-            self._connection_attempted = False
             self.client = None
             self._current_host = None
             self._current_port = None
