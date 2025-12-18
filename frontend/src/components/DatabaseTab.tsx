@@ -126,14 +126,14 @@ export default function DatabaseTab() {
           </Typography>
         </Box>
         <Box display="flex" gap={1.2} flexWrap="wrap" sx={{ width: { xs: '100%', sm: 'auto' } }}>
-          <Button 
+          {/* <Button 
             startIcon={<VpnKeyIcon />} 
             variant="outlined" 
             onClick={handleOpenKeysDialog}
             sx={{ borderRadius: 3, px: 3, width: { xs: '100%', sm: 'auto' } }}
           >
             Keys
-          </Button>
+          </Button> */}
           <Button 
             startIcon={<HubIcon />} 
             variant="outlined" 
