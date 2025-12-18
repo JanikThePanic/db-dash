@@ -9,5 +9,15 @@ export default defineConfig({
     host: true,
     port: 5173,
     strictPort: true,
+    proxy: {
+      '/api': {
+        target: 'http://backend:8000',
+        changeOrigin: true,
+      },
+      '/health': {
+        target: 'http://backend:8000',
+        changeOrigin: true,
+      },
+    },
   },
 });

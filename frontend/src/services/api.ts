@@ -9,17 +9,15 @@ import type {
   ProjectionResponse,
 } from '../types';
 
-const API_BASE_URL = 'http://localhost:8000/api';
-
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: '/api',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
 // Health & Meta
-export const healthCheck = () => axios.get('http://localhost:8000/health');
+export const healthCheck = () => axios.get('/health');
 export const getMeta = () => api.get<MetaResponse>('/meta');
 export const ping = () => api.get('/ping');
 
