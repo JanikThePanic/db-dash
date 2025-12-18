@@ -71,6 +71,10 @@ class Weaviate:
             additional_config = AdditionalConfig(
                 timeout=Timeout(init=3, query=5, insert=5, update=5, delete=5)
             )
+
+            # if user trying to connect to localhost from within docker container, use host.docker.internal
+            if HTTP_HOST in ["localhost", "127.0.0.1"]:
+                HTTP_HOST = "host.docker.internal"
             
             client = weaviate.connect_to_local(
                 host=HTTP_HOST,

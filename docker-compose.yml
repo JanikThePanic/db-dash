@@ -21,6 +21,8 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   frontend:
     container_name: db-dash-frontend
