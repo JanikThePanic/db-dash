@@ -19,6 +19,7 @@ so heres a vibe-coded frontend + my python backend to the rescue
 4. run the following command to start the app: ```docker compose up -d```
 
 (make sure your weaviate db instance is running and is exposed to a port)
+(or not, db dash can connect to docker networks too)
 
 ## sample weaviate instance
 
