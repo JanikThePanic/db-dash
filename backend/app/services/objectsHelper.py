@@ -12,6 +12,11 @@ def list_objects(
     limit: int = 50
 ) -> list | None:
     """ List objects in a specific collection. """
+
+    # Cap the limit at 5000
+    if limit > 5000:
+        limit = 5000
+
     collection = wc.client.collections.use(name)
     if collection is None:
         return None

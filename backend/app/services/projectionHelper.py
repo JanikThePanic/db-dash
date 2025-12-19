@@ -16,6 +16,12 @@ class ProjectionBody(BaseModel):
     limit: int = 500
     dims: int = 3
     includeProps: Optional[List[str]] = None
+    
+    def __init__(self, **data):
+        super().__init__(**data)
+        # Cap the limit at 5000
+        if self.limit > 5000:
+            self.limit = 5000
 
 def project_vectors(projection_config: ProjectionBody) -> dict | None:
     """ Project vectors from a specific collection into lower dimensions for visualization. """
