@@ -82,7 +82,7 @@ function PointCloud({ points, selectedPoint, onPointClick }: PointCloudProps) {
       onPointerOut={handlePointerOut}
       onClick={handleClick}
     >
-      <pointsMaterial size={0.25} vertexColors transparent opacity={0.9} />
+      <pointsMaterial size={0.15} vertexColors transparent opacity={0.85} />
     </points>
   );
 }
@@ -249,8 +249,8 @@ export default function ThreeDViewTab() {
                 <Box sx={{ height: { xs: '400px', sm: '500px', md: '600px' }, width: '100%', bgcolor: '#ffffff' }}>
                   <Canvas>
                     <color attach="background" args={['#ffffff']} />
-                    <PerspectiveCamera makeDefault position={[5, 5, 5]} />
-                    <OrbitControls enableDamping dampingFactor={0.05} />
+                    <PerspectiveCamera makeDefault position={[20, 20, 20]} />
+                    <OrbitControls enableDamping dampingFactor={0.5} />
                     <ambientLight intensity={0.7} />
                     <pointLight position={[10, 10, 10]} intensity={0.8} />
                     <Grid3D />
