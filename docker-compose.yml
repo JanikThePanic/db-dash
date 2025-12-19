@@ -27,6 +27,8 @@ services:
   frontend:
     container_name: db-dash-frontend
     image: ghcr.io/janikthepanic/db-dash-frontend:latest
+    environment:
+      - VITE_IS_DOCKER_CONTAINER=true
     build:
       context: ./frontend
       dockerfile: dockerfile
