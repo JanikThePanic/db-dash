@@ -51,12 +51,12 @@ function PointCloud({ points, selectedPoint, onPointClick }: PointCloudProps) {
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
   geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-  useFrame(() => {
-    if (meshRef.current) {
-      // Subtle rotation animation
-      meshRef.current.rotation.y += 0.001;
-    }
-  });
+  // useFrame(() => {
+  //   if (meshRef.current) {
+  //     // Subtle rotation animation
+  //     meshRef.current.rotation.y += 0.001;
+  //   }
+  // });
 
   const handlePointerMove = (event: any) => {
     const index = event.index;
@@ -249,7 +249,7 @@ export default function ThreeDViewTab() {
                 <Box sx={{ height: { xs: '400px', sm: '500px', md: '600px' }, width: '100%', bgcolor: '#000' }}>
                   <Canvas>
                     <PerspectiveCamera makeDefault position={[5, 5, 5]} />
-                    <OrbitControls enableDamping dampingFactor={0.05} />
+                    <OrbitControls enableDamping dampingFactor={0.5} />
                     <ambientLight intensity={0.5} />
                     <pointLight position={[10, 10, 10]} />
                     <Grid3D />
