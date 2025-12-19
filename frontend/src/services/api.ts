@@ -9,15 +9,19 @@ import type {
   ProjectionResponse,
 } from '../types';
 
+const isDocker = import.meta.env.VITE_IS_DOCKER_CONTAINER === 'true';
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: isDocker ? '/api' : 'http://localhost:8080/api', // Adjust according to your backend URL
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
 // Health & Meta
-export const healthCheck = () => axios.get('/health');
+export const healthCheck = () =>
+  axios.get(isDocker ? '/health' : 'http://localhost:8080/health');
+// export const healthCheck = () => axios.get('/health');
 export const getMeta = () => api.get<MetaResponse>('/meta');
 export const ping = () => api.get('/ping');
 
