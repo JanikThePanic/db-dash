@@ -39,12 +39,12 @@ function PointCloud({ points, selectedPoint, onPointClick }: PointCloudProps) {
   const colors = new Float32Array(
     points.flatMap((p, i) => {
       if (selectedPoint && p.id === selectedPoint.id) {
-        return [1, 0.2, 0.6]; // Bright magenta/pink for selected
+        return [0.8, 0, 0.4]; // Deep magenta for selected
       }
       if (hovered === i) {
         return [1, 0.5, 0]; // Bright orange for hovered
       }
-      return [0.5, 0.8, 1]; // Pastel blue for normal
+      return [0.2, 0.5, 0.9]; // Deeper blue for normal (light theme)
     })
   );
 
@@ -82,7 +82,7 @@ function PointCloud({ points, selectedPoint, onPointClick }: PointCloudProps) {
       onPointerOut={handlePointerOut}
       onClick={handleClick}
     >
-      <pointsMaterial size={0.05} vertexColors transparent opacity={0.8} />
+      <pointsMaterial size={0.25} vertexColors transparent opacity={0.9} />
     </points>
   );
 }
@@ -90,7 +90,7 @@ function PointCloud({ points, selectedPoint, onPointClick }: PointCloudProps) {
 function Grid3D() {
   return (
     <>
-      <gridHelper args={[20, 20, 0x444444, 0x222222]} />
+      <gridHelper args={[20, 20, 0xcccccc, 0xeeeeee]} />
       <axesHelper args={[5]} />
     </>
   );
@@ -246,12 +246,13 @@ export default function ThreeDViewTab() {
                 <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, mb: 2, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
                   🌌 Vector Space ({points.length} points)
                 </Typography>
-                <Box sx={{ height: { xs: '400px', sm: '500px', md: '600px' }, width: '100%', bgcolor: '#000' }}>
+                <Box sx={{ height: { xs: '400px', sm: '500px', md: '600px' }, width: '100%', bgcolor: '#ffffff' }}>
                   <Canvas>
+                    <color attach="background" args={['#ffffff']} />
                     <PerspectiveCamera makeDefault position={[5, 5, 5]} />
-                    <OrbitControls enableDamping dampingFactor={0.5} />
-                    <ambientLight intensity={0.5} />
-                    <pointLight position={[10, 10, 10]} />
+                    <OrbitControls enableDamping dampingFactor={0.05} />
+                    <ambientLight intensity={0.7} />
+                    <pointLight position={[10, 10, 10]} intensity={0.8} />
                     <Grid3D />
                     <PointCloud
                       points={points}
